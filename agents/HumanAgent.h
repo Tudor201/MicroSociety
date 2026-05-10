@@ -1,0 +1,8 @@
+//
+// Created by tudor on 10/05/2026.
+//
+
+#ifndef MICROSOCIETY_HUMANAGENT_H
+#define MICROSOCIETY_HUMANAGENT_H
+
+#endif //MICROSOCIETY_HUMANAGENT_H
