@@ -1,5 +1,29 @@
-//
-// Created by tudor on 10/05/2026.
-//
-
 #include "Simulation.h"
+
+#include <iostream>
+
+Simulation::Simulation()
+    : running(false), currentTick(0) {}
+
+void Simulation::run() {
+    running = true;
+
+    std::cout << "MicroSociety simulation started.\n";
+
+    while (running && currentTick < 3) {
+        update();
+        display();
+        currentTick++;
+    }
+
+    std::cout << "Simulation ended.\n";
+}
+
+void Simulation::update() {
+    std::cout << "Simulation tick " << currentTick + 1 << "\n";
+    world.update();
+}
+
+void Simulation::display() const {
+    world.display();
+}
