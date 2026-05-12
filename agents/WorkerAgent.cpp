@@ -8,16 +8,7 @@ WorkerAgent::WorkerAgent(int id, const std::string& name, const Position& positi
       jobName(jobName) {}
 
 void WorkerAgent::update(World& world) {
-    (void)world;
-
-    earnMoney();
-
-    changeHunger(7);
-    changeEnergy(-10);
-    changeHappiness(1);
-    moveBy(1, 0);
-
-    std::cout << name << " worked as " << jobName << " and earned " << salary << " money.\n";
+    HumanAgent::update(world);
 }
 
 void WorkerAgent::display() const {

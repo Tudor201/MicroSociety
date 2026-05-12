@@ -2,6 +2,7 @@
 #define MICROSOCIETY_WORKERAGENT_H
 
 #include "HumanAgent.h"
+#include <memory>
 #include <string>
 
 class WorkerAgent : public HumanAgent {

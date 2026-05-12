@@ -1,19 +1,23 @@
 #include "HumanAgent.h"
+#include "../ai/NeedsBasedStrategy.h"
+#include "../actions/Action.h"
 #include <iostream>
+#include <memory>
 
 HumanAgent::HumanAgent(int id, const std::string& name, const Position& position)
     : Agent(id, position, 30, 100, 100, 50),
-      name(name) {}
+      name(name),
+      strategy(std::make_shared<NeedsBasedStrategy>()) {}
 
 void HumanAgent::update(World& world) {
-    (void)world;
+    if (strategy != nullptr) {
+        std::unique_ptr<Action> action = strategy->chooseAction(*this, world);
 
-    changeHunger(5);
-    changeEnergy(-3);
-    changeHappiness(-1);
-    moveBy(1, 0);
-
-    std::cout << name << " is living normally.\n";
+        if (action != nullptr) {
+            std::cout << name << " chose action: " << action->getName() << ".\n";
+            action->execute(*this, world);
+        }
+    }
 }
 
 void HumanAgent::display() const {

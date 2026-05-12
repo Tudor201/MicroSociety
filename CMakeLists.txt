@@ -22,4 +22,10 @@ add_executable(MicroSociety src/main.cpp
         ai/NeedsBasedStrategy.cpp
         ai/NeedsBasedStrategy.h
         patterns/AgentFactory.cpp
-        patterns/AgentFactory.h)
+        patterns/AgentFactory.h
+        actions/WorkAction.cpp
+        actions/WorkAction.h
+        actions/EatAction.cpp
+        actions/EatAction.h
+        actions/RestAction.cpp
+        actions/RestAction.h)

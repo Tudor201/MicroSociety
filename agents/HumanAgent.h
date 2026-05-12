@@ -1,11 +1,15 @@
 #ifndef MICROSOCIETY_HUMANAGENT_H
 #define MICROSOCIETY_HUMANAGENT_H
 #include "Agent.h"
+#include <memory>
 #include <string>
+
+class DecisionStrategy;
 
 class HumanAgent : public Agent {
 protected:
     std::string name;
+    std::shared_ptr<DecisionStrategy> strategy;
 
 public:
     HumanAgent(int id, const std::string& name, const Position& position);
