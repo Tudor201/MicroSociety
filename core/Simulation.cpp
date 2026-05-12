@@ -1,9 +1,8 @@
 #include "Simulation.h"
-
 #include <iostream>
 
 Simulation::Simulation()
-    : running(false), currentTick(0) {}
+    : running(false), currentTick(0) {world.spawnInitialAgents();}
 
 void Simulation::run() {
     running = true;
