@@ -6,7 +6,7 @@
 class Agent;
 
 enum class AgentType {
-    Worker
+    Worker, Trader, Student
 };
 
 class AgentFactory {

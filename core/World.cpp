@@ -9,8 +9,18 @@ World::World() {
 }
 
 void World::spawnInitialAgents() {
-    for (int i = 1; i <= 3; i++) {
-        std::unique_ptr<Agent> agent = AgentFactory::createAgent(AgentType::Worker, i);
+    for (int i = 1; i <= 6; i++) {
+        AgentType type;
+
+        if (i % 3 == 1) {
+            type = AgentType::Worker;
+        } else if (i % 3 == 2) {
+            type = AgentType::Trader;
+        } else {
+            type = AgentType::Student;
+        }
+
+        std::unique_ptr<Agent> agent = AgentFactory::createAgent(type, i);
 
         if (agent != nullptr) {
             agents.push_back(std::move(agent));

@@ -28,4 +28,8 @@ add_executable(MicroSociety src/main.cpp
         actions/EatAction.cpp
         actions/EatAction.h
         actions/RestAction.cpp
-        actions/RestAction.h)
+        actions/RestAction.h
+        agents/TraderAgent.cpp
+        agents/TraderAgent.h
+        agents/StudentAgent.cpp
+        agents/StudentAgent.h)
