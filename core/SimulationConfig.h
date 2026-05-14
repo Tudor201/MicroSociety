@@ -8,6 +8,9 @@ private:
     int initialPopulation;
     int maxTicks;
     int foodPrice;
+    int maxAge;
+    int maxPopulation;
+    int reproductionChancePercent;
 
     SimulationConfig();
 
@@ -22,6 +25,9 @@ public:
     int getInitialPopulation() const;
     int getMaxTicks() const;
     int getFoodPrice() const;
+    int getMaxAge() const;
+    int getMaxPopulation() const;
+    int getReproductionChancePercent() const;
 };
 
 #endif //MICROSOCIETY_SIMULATIONCONFIG_H

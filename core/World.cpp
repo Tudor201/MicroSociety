@@ -1,16 +1,21 @@
 #include "World.h"
 #include "SimulationConfig.h"
+#include "RandomGenerator.h"
+
 #include "../patterns/AgentFactory.h"
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
 
+#include <algorithm>
+#include <cmath>
 #include <iostream>
-#include <utility>
 #include <string>
+#include <utility>
 
 World::World()
     : width(SimulationConfig::getInstance().getMapWidth()),
       height(SimulationConfig::getInstance().getMapHeight()),
+      nextAgentId(1),
       terrain(width, height, CellType::Empty) {
     std::cout << "World created with size "
               << width << " x " << height << ".\n";
@@ -19,18 +24,19 @@ World::World()
 void World::spawnInitialAgents() {
     int population = SimulationConfig::getInstance().getInitialPopulation();
 
-    for (int i = 1; i <= population; i++) {
+    for (int i = 0; i < population; i++) {
         AgentType type;
 
-        if (i % 3 == 1) {
+        if (i % 3 == 0) {
             type = AgentType::Worker;
-        } else if (i % 3 == 2) {
+        } else if (i % 3 == 1) {
             type = AgentType::Trader;
         } else {
             type = AgentType::Student;
         }
 
-        std::unique_ptr<Agent> agent = AgentFactory::createAgent(type, i);
+        int id = nextAgentId++;
+        std::unique_ptr<Agent> agent = AgentFactory::createAgent(type, id);
 
         if (agent != nullptr) {
             int spawnedId = agent->getId();
@@ -54,8 +60,13 @@ void World::update() {
     std::cout << "World updating agents...\n";
 
     for (auto& agent : agents) {
-        agent->update(*this);
+        if (agent->isAlive()) {
+            agent->update(*this);
+        }
     }
+
+    removeDeadAgents();
+    handleReproduction();
 }
 
 void World::display() const {
@@ -95,10 +106,15 @@ void World::display() const {
 
 void World::clearAgents() {
     agents.clear();
+    nextAgentId = 1;
 }
 
 void World::addAgent(std::unique_ptr<Agent> agent) {
     if (agent != nullptr) {
+        if (agent->getId() >= nextAgentId) {
+            nextAgentId = agent->getId() + 1;
+        }
+
         agents.push_back(std::move(agent));
     }
 }
@@ -135,4 +151,135 @@ int World::getHeight() const {
 
 const std::vector<std::unique_ptr<Agent>>& World::getAgents() const {
     return agents;
+}
+
+void World::removeDeadAgents() {
+    int maxAge = SimulationConfig::getInstance().getMaxAge();
+
+    agents.erase(
+        std::remove_if(
+            agents.begin(),
+            agents.end(),
+            [maxAge](const std::unique_ptr<Agent>& agent) {
+                bool shouldDie = !agent->isAlive() || agent->getAge() > maxAge;
+
+                if (shouldDie) {
+                    EventBus::getInstance().publish(
+                        SimulationEvent(
+                            EventType::AgentDied,
+                            agent->getId(),
+                            "Agent #" + std::to_string(agent->getId()) + " died."
+                        )
+                    );
+                }
+
+                return shouldDie;
+            }
+        ),
+        agents.end()
+    );
+}
+
+void World::handleReproduction() {
+    SimulationConfig& config = SimulationConfig::getInstance();
+    RandomGenerator& random = RandomGenerator::getInstance();
+
+    if (getAgentCount() >= config.getMaxPopulation()) {
+        return;
+    }
+
+    std::vector<std::unique_ptr<Agent>> newborns;
+
+    for (size_t i = 0; i < agents.size(); i++) {
+        for (size_t j = i + 1; j < agents.size(); j++) {
+            if (getAgentCount() + static_cast<int>(newborns.size()) >= config.getMaxPopulation()) {
+                break;
+            }
+
+            Agent& first = *agents[i];
+            Agent& second = *agents[j];
+
+            if (!first.isAlive() || !second.isAlive()) {
+                continue;
+            }
+
+            Position p1 = first.getPosition();
+            Position p2 = second.getPosition();
+
+            int distance = std::abs(p1.x - p2.x) + std::abs(p1.y - p2.y);
+
+            bool closeEnough = distance <= 1;
+
+            bool firstCanReproduce =
+                first.getAge() >= 18 &&
+                first.getAge() <= 60 &&
+                first.getHealth() > 60 &&
+                first.getHappiness() > 70 &&
+                first.getEnergy() > 50 &&
+                first.getMoney() > 80;
+
+            bool secondCanReproduce =
+                second.getAge() >= 18 &&
+                second.getAge() <= 60 &&
+                second.getHealth() > 60 &&
+                second.getHappiness() > 70 &&
+                second.getEnergy() > 50 &&
+                second.getMoney() > 80;
+
+            if (!closeEnough || !firstCanReproduce || !secondCanReproduce) {
+                continue;
+            }
+
+            int chance = random.getInt(1, 100);
+
+            if (chance > config.getReproductionChancePercent()) {
+                continue;
+            }
+
+            AgentType childType;
+
+            int typeChoice = random.getInt(0, 2);
+
+            if (typeChoice == 0) {
+                childType = AgentType::Worker;
+            } else if (typeChoice == 1) {
+                childType = AgentType::Trader;
+            } else {
+                childType = AgentType::Student;
+            }
+
+            int childId = nextAgentId++;
+            std::unique_ptr<Agent> child = AgentFactory::createAgent(childType, childId);
+
+            if (child != nullptr) {
+                child->setPosition(p1);
+                child->setAge(0);
+
+                child->changeMoney(20 - child->getMoney());
+                child->changeHunger(20 - child->getHunger());
+                child->changeEnergy(80 - child->getEnergy());
+                child->changeHappiness(70 - child->getHappiness());
+                child->changeHealth(100 - child->getHealth());
+
+                first.changeEnergy(-10);
+                second.changeEnergy(-10);
+                first.changeMoney(-10);
+                second.changeMoney(-10);
+
+                EventBus::getInstance().publish(
+                    SimulationEvent(
+                        EventType::AgentBorn,
+                        childId,
+                        "Agent #" + std::to_string(childId) + " was born."
+                    )
+                );
+
+                newborns.push_back(std::move(child));
+            }
+        }
+    }
+
+    for (auto& newborn : newborns) {
+        agents.push_back(std::move(newborn));
+    }
 }

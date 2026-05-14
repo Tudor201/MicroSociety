@@ -21,6 +21,7 @@ void StatisticsManager::displayStatistics(const World& world) const {
     double totalHappiness = 0;
     double totalHealth = 0;
     double totalAge = 0;
+    int aliveCount = 0;
 
     for (const auto& agent : agents) {
         totalHunger += agent->getHunger();
@@ -29,12 +30,17 @@ void StatisticsManager::displayStatistics(const World& world) const {
         totalHappiness += agent->getHappiness();
         totalHealth += agent->getHealth();
         totalAge += agent->getAge();
+
+        if (agent->isAlive()) {
+            aliveCount++;
+        }
     }
 
     double agentCount = static_cast<double>(agents.size());
 
     std::cout << "\n--- Statistics ---\n";
     std::cout << "Population: " << agents.size() << '\n';
+    std::cout << "Alive agents: " << aliveCount << '\n';
 
     std::cout << std::fixed << std::setprecision(2);
 

@@ -5,7 +5,10 @@ SimulationConfig::SimulationConfig()
       mapHeight(10),
       initialPopulation(6),
       maxTicks(10),
-      foodPrice(10) {}
+      foodPrice(10),
+      maxAge(90),
+      maxPopulation(25),
+      reproductionChancePercent(15) {}
 
 SimulationConfig& SimulationConfig::getInstance() {
     static SimulationConfig instance;
@@ -30,4 +33,16 @@ int SimulationConfig::getMaxTicks() const {
 
 int SimulationConfig::getFoodPrice() const {
     return foodPrice;
+}
+
+int SimulationConfig::getMaxAge() const {
+    return maxAge;
+}
+
+int SimulationConfig::getMaxPopulation() const {
+    return maxPopulation;
+}
+
+int SimulationConfig::getReproductionChancePercent() const {
+    return reproductionChancePercent;
 }

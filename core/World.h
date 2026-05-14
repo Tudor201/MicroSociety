@@ -14,6 +14,7 @@ private:
     int height;
     Grid<CellType> terrain;
     std::vector<std::unique_ptr<Agent>> agents;
+    int nextAgentId;
 
 public:
     World();
@@ -31,6 +32,9 @@ public:
     int getAgentCount() const;
     int getWidth() const;
     int getHeight() const;
+
+    void removeDeadAgents();
+    void handleReproduction();
 
     const std::vector<std::unique_ptr<Agent>>& getAgents() const;
 };

@@ -11,6 +11,8 @@ EventLogger::EventLogger()
     subscribeTo(EventType::AgentAte);
     subscribeTo(EventType::AgentRested);
     subscribeTo(EventType::AgentFailedAction);
+    subscribeTo(EventType::AgentDied);
+    subscribeTo(EventType::AgentBorn);
 }
 
 void EventLogger::subscribeTo(EventType type) {

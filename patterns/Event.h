@@ -9,7 +9,9 @@ enum class EventType {
     AgentWorked,
     AgentAte,
     AgentRested,
-    AgentFailedAction
+    AgentFailedAction,
+    AgentDied,
+    AgentBorn
 };
 
 struct SimulationEvent {
