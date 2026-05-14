@@ -1,11 +1,12 @@
 #include "EatAction.h"
 #include "../agents/Agent.h"
+#include "../core/SimulationConfig.h"
 #include <iostream>
 
 void EatAction::execute(Agent& agent, World& world) {
     (void)world;
 
-    const int foodPrice = 10;
+    const int foodPrice = SimulationConfig::getInstance().getFoodPrice();
 
     if (agent.getMoney() >= foodPrice) {
         agent.changeMoney(-foodPrice);

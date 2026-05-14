@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "SimulationConfig.h"
 #include <iostream>
 
 Simulation::Simulation()
@@ -9,7 +10,9 @@ void Simulation::run() {
 
     std::cout << "MicroSociety simulation started.\n";
 
-    while (running && currentTick < 3) {
+    int maxTicks = SimulationConfig::getInstance().getMaxTicks();
+
+    while (running && currentTick < maxTicks) {
         update();
         display();
         currentTick++;

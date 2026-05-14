@@ -34,4 +34,6 @@ add_executable(MicroSociety src/main.cpp
         agents/StudentAgent.cpp
         agents/StudentAgent.h
         core/Grid.h
-        core/CellType.h)
+        core/CellType.h
+        core/SimulationConfig.cpp
+        core/SimulationConfig.h)

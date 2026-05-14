@@ -1,19 +1,22 @@
 #include "World.h"
+#include "SimulationConfig.h"
 #include "../patterns/AgentFactory.h"
 
 #include <iostream>
 #include <utility>
 
 World::World()
-    : width(10),
-      height(10),
+    : width(SimulationConfig::getInstance().getMapWidth()),
+      height(SimulationConfig::getInstance().getMapHeight()),
       terrain(width, height, CellType::Empty) {
     std::cout << "World created with size "
               << width << " x " << height << ".\n";
 }
 
 void World::spawnInitialAgents() {
-    for (int i = 1; i <= 6; i++) {
+    int population = SimulationConfig::getInstance().getInitialPopulation();
+
+    for (int i = 1; i <= population; i++) {
         AgentType type;
 
         if (i % 3 == 1) {
