@@ -2,11 +2,13 @@
 #define MICROSOCIETY_SIMULATION_H
 #include "World.h"
 #include "../systems/StatisticsManager.h"
+#include "../systems/EventLogger.h"
 
 class Simulation {
 private:
     World world;
     StatisticsManager statisticsManager;
+    EventLogger eventLogger;
     bool running;
     int currentTick;
 

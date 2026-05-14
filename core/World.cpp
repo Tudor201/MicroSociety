@@ -1,9 +1,12 @@
 #include "World.h"
 #include "SimulationConfig.h"
 #include "../patterns/AgentFactory.h"
+#include "../patterns/EventBus.h"
+#include "../patterns/Event.h"
 
 #include <iostream>
 #include <utility>
+#include <string>
 
 World::World()
     : width(SimulationConfig::getInstance().getMapWidth()),
@@ -30,6 +33,16 @@ void World::spawnInitialAgents() {
         std::unique_ptr<Agent> agent = AgentFactory::createAgent(type, i);
 
         if (agent != nullptr) {
+            int spawnedId = agent->getId();
+
+            EventBus::getInstance().publish(
+                SimulationEvent(
+                    EventType::AgentSpawned,
+                    spawnedId,
+                    "Agent #" + std::to_string(spawnedId) + " spawned in the world."
+                )
+            );
+
             agents.push_back(std::move(agent));
         }
     }

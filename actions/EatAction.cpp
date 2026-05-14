@@ -1,7 +1,10 @@
 #include "EatAction.h"
 #include "../agents/Agent.h"
 #include "../core/SimulationConfig.h"
+#include "../patterns/EventBus.h"
+#include "../patterns/Event.h"
 #include <iostream>
+#include <string>
 
 void EatAction::execute(Agent& agent, World& world) {
     (void)world;
@@ -15,9 +18,27 @@ void EatAction::execute(Agent& agent, World& world) {
         agent.changeHappiness(3);
 
         std::cout << "Agent #" << agent.getId() << " ate food.\n";
+
+        EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentAte,
+                agent.getId(),
+                "Agent #" + std::to_string(agent.getId()) + " ate food."
+            )
+        );
     } else {
-        std::cout << "Agent #" << agent.getId() << " wanted to eat but did not have enough money.\n";
         agent.changeHappiness(-5);
+
+        std::cout << "Agent #" << agent.getId()
+                  << " wanted to eat but did not have enough money.\n";
+
+        EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentFailedAction,
+                agent.getId(),
+                "Agent #" + std::to_string(agent.getId()) + " wanted to eat but did not have enough money."
+            )
+        );
     }
 }
 

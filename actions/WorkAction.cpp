@@ -3,8 +3,11 @@
 #include "../agents/WorkerAgent.h"
 #include "../agents/TraderAgent.h"
 #include "../agents/StudentAgent.h"
+#include "../patterns/EventBus.h"
+#include "../patterns/Event.h"
 
 #include <iostream>
+#include <string>
 
 void WorkAction::execute(Agent& agent, World& world) {
     (void)world;
@@ -16,7 +19,17 @@ void WorkAction::execute(Agent& agent, World& world) {
         agent.changeEnergy(-10);
         agent.changeHappiness(1);
 
-        std::cout << "Agent #" << agent.getId() << " worked and earned money.\n";
+        std::cout << "Agent #" << agent.getId()
+                  << " worked and earned money.\n";
+
+        EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentWorked,
+                agent.getId(),
+                "Agent #" + std::to_string(agent.getId()) + " worked and earned money."
+            )
+        );
+
         return;
     }
 
@@ -27,7 +40,17 @@ void WorkAction::execute(Agent& agent, World& world) {
         agent.changeEnergy(-8);
         agent.changeHappiness(2);
 
-        std::cout << "Agent #" << agent.getId() << " made a trade.\n";
+        std::cout << "Agent #" << agent.getId()
+                  << " made a trade.\n";
+
+        EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentWorked,
+                agent.getId(),
+                "Agent #" + std::to_string(agent.getId()) + " made a trade."
+            )
+        );
+
         return;
     }
 
@@ -38,11 +61,30 @@ void WorkAction::execute(Agent& agent, World& world) {
         agent.changeEnergy(-7);
         agent.changeMoney(-2);
 
-        std::cout << "Agent #" << agent.getId() << " studied.\n";
+        std::cout << "Agent #" << agent.getId()
+                  << " studied.\n";
+
+        EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentWorked,
+                agent.getId(),
+                "Agent #" + std::to_string(agent.getId()) + " studied."
+            )
+        );
+
         return;
     }
 
-    std::cout << "Agent #" << agent.getId() << " cannot perform this action.\n";
+    std::cout << "Agent #" << agent.getId()
+              << " cannot perform this action.\n";
+
+    EventBus::getInstance().publish(
+        SimulationEvent(
+            EventType::AgentFailedAction,
+            agent.getId(),
+            "Agent #" + std::to_string(agent.getId()) + " could not perform work action."
+        )
+    );
 }
 
 std::string WorkAction::getName() const {

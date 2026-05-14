@@ -38,4 +38,9 @@ add_executable(MicroSociety src/main.cpp
         core/SimulationConfig.cpp
         core/SimulationConfig.h
         systems/StatisticsManager.cpp
-        systems/StatisticsManager.h)
+        systems/StatisticsManager.h
+        patterns/Event.h
+        patterns/EventBus.cpp
+        patterns/EventBus.h
+        systems/EventLogger.cpp
+        systems/EventLogger.h)
