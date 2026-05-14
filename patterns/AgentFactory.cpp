@@ -57,11 +57,15 @@ std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
         int randomEnergy = random.getInt(40, 100);
         int randomMoney = random.getInt(50, 200);
         int randomHappiness = random.getInt(30, 90);
+        int randomHealth = random.getInt(70, 100);
+        int randomAge = random.getInt(18, 60);
 
         agent->changeHunger(randomHunger - agent->getHunger());
         agent->changeEnergy(randomEnergy - agent->getEnergy());
         agent->changeMoney(randomMoney - agent->getMoney());
         agent->changeHappiness(randomHappiness - agent->getHappiness());
+        agent->changeHealth(randomHealth - agent->getHealth());
+        agent->setAge(randomAge);
     }
 
     return agent;

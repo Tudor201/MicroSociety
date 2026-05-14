@@ -18,6 +18,8 @@ void HumanAgent::update(World& world) {
             action->execute(*this, world);
         }
     }
+
+    updateLifeStatus();
 }
 
 void HumanAgent::display() const {
@@ -28,6 +30,8 @@ void HumanAgent::display() const {
               << " | Energy: " << energy
               << " | Money: " << money
               << " | Happiness: " << happiness
+              << " | Health: " << health
+              << " | Age: " << age
               << '\n';
 }
 

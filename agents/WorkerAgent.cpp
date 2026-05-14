@@ -20,6 +20,8 @@ void WorkerAgent::display() const {
               << " | Energy: " << energy
               << " | Money: " << money
               << " | Happiness: " << happiness
+              << " | Health: " << health
+              << " | Age: " << age
               << '\n';
 }
 

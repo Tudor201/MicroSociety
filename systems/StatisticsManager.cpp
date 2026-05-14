@@ -19,12 +19,16 @@ void StatisticsManager::displayStatistics(const World& world) const {
     double totalEnergy = 0;
     double totalMoney = 0;
     double totalHappiness = 0;
+    double totalHealth = 0;
+    double totalAge = 0;
 
     for (const auto& agent : agents) {
         totalHunger += agent->getHunger();
         totalEnergy += agent->getEnergy();
         totalMoney += agent->getMoney();
         totalHappiness += agent->getHappiness();
+        totalHealth += agent->getHealth();
+        totalAge += agent->getAge();
     }
 
     double agentCount = static_cast<double>(agents.size());
@@ -38,6 +42,8 @@ void StatisticsManager::displayStatistics(const World& world) const {
     std::cout << "Average energy: " << totalEnergy / agentCount << '\n';
     std::cout << "Average money: " << totalMoney / agentCount << '\n';
     std::cout << "Average happiness: " << totalHappiness / agentCount << '\n';
+    std::cout << "Average health: " << totalHealth / agentCount << '\n';
+    std::cout << "Average age: " << totalAge / agentCount << '\n';
 
     std::cout << "------------------\n\n";
 }

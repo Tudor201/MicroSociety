@@ -20,7 +20,7 @@ bool SaveManager::saveWorld(const World& world, const std::string& filePath) con
         return false;
     }
 
-    fout << "MICROSOCIETY_SAVE_V1\n";
+    fout << "MICROSOCIETY_SAVE\n";
     fout << world.getAgentCount() << '\n';
 
     const auto& agents = world.getAgents();
@@ -35,7 +35,9 @@ bool SaveManager::saveWorld(const World& world, const std::string& filePath) con
              << agent->getHunger() << ' '
              << agent->getEnergy() << ' '
              << agent->getMoney() << ' '
-             << agent->getHappiness() << '\n';
+             << agent->getHappiness() << ' '
+             << agent->getHealth() << ' '
+             << agent->getAge() << '\n';
     }
 
     return true;
@@ -51,7 +53,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
     std::string header;
     std::getline(fin, header);
 
-    if (header != "MICROSOCIETY_SAVE_V1") {
+    if (header != "MICROSOCIETY_SAVE") {
         std::cout << "Invalid save file format.\n";
         return false;
     }
@@ -75,8 +77,10 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
         int energy;
         int money;
         int happiness;
+        int health;
+        int age;
 
-        fin >> type >> id >> x >> y >> hunger >> energy >> money >> happiness;
+        fin >> type >> id >> x >> y >> hunger >> energy >> money >> happiness >> health >> age;
 
         if (!fin) {
             std::cout << "Error while reading save file.\n";
@@ -96,6 +100,8 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
         agent->changeEnergy(energy - agent->getEnergy());
         agent->changeMoney(money - agent->getMoney());
         agent->changeHappiness(happiness - agent->getHappiness());
+        agent->changeHealth(health - agent->getHealth());
+        agent->setAge(age);
 
         world.addAgent(std::move(agent));
     }

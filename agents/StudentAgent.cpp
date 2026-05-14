@@ -20,6 +20,8 @@ void StudentAgent::display() const {
               << " | Energy: " << energy
               << " | Money: " << money
               << " | Happiness: " << happiness
+              << " | Health: " << health
+              << " | Age: " << age
               << " | Knowledge: " << knowledgeLevel
               << '\n';
 }
