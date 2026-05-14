@@ -45,4 +45,6 @@ add_executable(MicroSociety src/main.cpp
         systems/EventLogger.cpp
         systems/EventLogger.h
         systems/SaveManager.cpp
-        systems/SaveManager.h)
+        systems/SaveManager.h
+        core/RandomGenerator.cpp
+        core/RandomGenerator.h)

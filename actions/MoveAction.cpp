@@ -1,13 +1,39 @@
 #include "MoveAction.h"
 #include "../agents/Agent.h"
 #include "../core/World.h"
+#include "../core/RandomGenerator.h"
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
 
 #include <iostream>
+#include <string>
 
 void MoveAction::execute(Agent& agent, World& world) {
-    bool moved = world.moveAgent(agent, 1, 0);
+    RandomGenerator& random = RandomGenerator::getInstance();
+
+    int direction = random.getInt(0, 3);
+
+    int dx = 0;
+    int dy = 0;
+
+    switch (direction) {
+        case 0:
+            dx = 1;
+            break;
+        case 1:
+            dx = -1;
+            break;
+        case 2:
+            dy = 1;
+            break;
+        case 3:
+            dy = -1;
+            break;
+        default:
+            break;
+    }
+
+    bool moved = world.moveAgent(agent, dx, dy);
 
     if (moved) {
         agent.changeHunger(3);

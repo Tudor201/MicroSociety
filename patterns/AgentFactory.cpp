@@ -1,41 +1,70 @@
 #include "AgentFactory.h"
+#include "../agents/Agent.h"
 #include "../agents/WorkerAgent.h"
 #include "../agents/TraderAgent.h"
 #include "../agents/StudentAgent.h"
+
 #include "../core/Position.h"
+#include "../core/SimulationConfig.h"
+#include "../core/RandomGenerator.h"
 
 #include <memory>
 #include <string>
 
 std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
+    RandomGenerator& random = RandomGenerator::getInstance();
+    SimulationConfig& config = SimulationConfig::getInstance();
+
+    int x = random.getInt(0, config.getMapWidth() - 1);
+    int y = random.getInt(0, config.getMapHeight() - 1);
+
+    Position position(x, y);
+
+    std::unique_ptr<Agent> agent;
+
     switch (type) {
         case AgentType::Worker:
-            return std::make_unique<WorkerAgent>(
+            agent = std::make_unique<WorkerAgent>(
                 id,
                 "Worker_" + std::to_string(id),
-                Position(id, id),
-                25,
+                position,
+                random.getInt(20, 45),
                 "Builder"
             );
+            break;
 
         case AgentType::Trader:
-            return std::make_unique<TraderAgent>(
+            agent = std::make_unique<TraderAgent>(
                 id,
                 "Trader_" + std::to_string(id),
-                Position(id, id),
-                40
+                position,
+                random.getInt(25, 60)
             );
+            break;
 
         case AgentType::Student:
-            return std::make_unique<StudentAgent>(
+            agent = std::make_unique<StudentAgent>(
                 id,
                 "Student_" + std::to_string(id),
-                Position(id, id),
+                position,
                 "University of Bucharest"
             );
+            break;
     }
 
-    return nullptr;
+    if (agent != nullptr) {
+        int randomHunger = random.getInt(10, 80);
+        int randomEnergy = random.getInt(40, 100);
+        int randomMoney = random.getInt(50, 200);
+        int randomHappiness = random.getInt(30, 90);
+
+        agent->changeHunger(randomHunger - agent->getHunger());
+        agent->changeEnergy(randomEnergy - agent->getEnergy());
+        agent->changeMoney(randomMoney - agent->getMoney());
+        agent->changeHappiness(randomHappiness - agent->getHappiness());
+    }
+
+    return agent;
 }
 
 std::unique_ptr<Agent> AgentFactory::createAgentFromTypeName(const std::string& typeName, int id) {
