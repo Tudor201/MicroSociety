@@ -43,4 +43,6 @@ add_executable(MicroSociety src/main.cpp
         patterns/EventBus.cpp
         patterns/EventBus.h
         systems/EventLogger.cpp
-        systems/EventLogger.h)
+        systems/EventLogger.h
+        systems/SaveManager.cpp
+        systems/SaveManager.h)

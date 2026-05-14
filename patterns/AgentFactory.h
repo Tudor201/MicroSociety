@@ -2,6 +2,7 @@
 #define MICROSOCIETY_AGENTFACTORY_H
 
 #include <memory>
+#include <string>
 
 class Agent;
 
@@ -12,6 +13,7 @@ enum class AgentType {
 class AgentFactory {
 public:
     static std::unique_ptr<Agent> createAgent(AgentType type, int id);
+    static std::unique_ptr<Agent> createAgentFromTypeName(const std::string& typeName, int id);
 };
 
 #endif //MICROSOCIETY_AGENTFACTORY_H

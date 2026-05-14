@@ -93,6 +93,16 @@ void World::display() const {
     std::cout << "--------------\n\n";
 }
 
+void World::clearAgents() {
+    agents.clear();
+}
+
+void World::addAgent(std::unique_ptr<Agent> agent) {
+    if (agent != nullptr) {
+        agents.push_back(std::move(agent));
+    }
+}
+
 bool World::isInside(const Position& position) const {
     return terrain.isInside(position.x, position.y);
 }

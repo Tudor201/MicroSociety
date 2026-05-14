@@ -2,6 +2,7 @@
 #define MICROSOCIETY_AGENT_H
 #include "../core/Position.h"
 #include <memory>
+#include <string>
 
 class World;
 
@@ -25,6 +26,7 @@ public:
     virtual void update(World& world) = 0;
     virtual void display() const = 0;
     virtual std::unique_ptr<Agent> clone() const = 0;
+    virtual std::string getType() const = 0;
 
     int getId() const;
     Position getPosition() const;

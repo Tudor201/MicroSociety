@@ -22,6 +22,9 @@ public:
     void update();
     void display() const;
 
+    void clearAgents();
+    void addAgent(std::unique_ptr<Agent> agent);
+
     bool isInside(const Position& position) const;
     bool moveAgent(Agent& agent, int dx, int dy);
 

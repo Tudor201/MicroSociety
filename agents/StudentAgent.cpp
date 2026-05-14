@@ -36,3 +36,7 @@ void StudentAgent::study() {
 int StudentAgent::getKnowledgeLevel() const {
     return knowledgeLevel;
 }
+
+std::string StudentAgent::getType() const {
+    return "Student";
+}

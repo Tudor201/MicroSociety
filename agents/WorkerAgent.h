@@ -16,6 +16,7 @@ public:
     void update(World& world) override;
     void display() const override;
     std::unique_ptr<Agent> clone() const override;
+    std::string getType() const override;
 
     void earnMoney();
     int getSalary() const;

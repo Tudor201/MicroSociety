@@ -37,3 +37,19 @@ std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
 
     return nullptr;
 }
+
+std::unique_ptr<Agent> AgentFactory::createAgentFromTypeName(const std::string& typeName, int id) {
+    if (typeName == "Worker") {
+        return createAgent(AgentType::Worker, id);
+    }
+
+    if (typeName == "Trader") {
+        return createAgent(AgentType::Trader, id);
+    }
+
+    if (typeName == "Student") {
+        return createAgent(AgentType::Student, id);
+    }
+
+    return nullptr;
+}

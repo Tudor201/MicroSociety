@@ -3,7 +3,13 @@
 #include <iostream>
 
 Simulation::Simulation()
-    : running(false), currentTick(0) {world.spawnInitialAgents();}
+    : running(false), currentTick(0) {
+    if (saveManager.loadWorld(world, "data/save.txt")) {
+        std::cout << "World loaded from save file.\n";
+    } else {
+        world.spawnInitialAgents();
+    }
+}
 
 void Simulation::run() {
     running = true;
@@ -16,6 +22,10 @@ void Simulation::run() {
         update();
         display();
         currentTick++;
+    }
+
+    if (saveManager.saveWorld(world, "data/save.txt")) {
+        std::cout << "World saved successfully.\n";
     }
 
     std::cout << "Simulation ended.\n";

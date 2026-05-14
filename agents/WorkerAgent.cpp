@@ -34,3 +34,7 @@ void WorkerAgent::earnMoney() {
 int WorkerAgent::getSalary() const {
     return salary;
 }
+
+std::string WorkerAgent::getType() const {
+    return "Worker";
+}

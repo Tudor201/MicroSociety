@@ -33,3 +33,7 @@ void TraderAgent::makeTrade() {
 int TraderAgent::getProfitPerTrade() const {
     return profitPerTrade;
 }
+
+std::string TraderAgent::getType() const {
+    return "Trader";
+}
