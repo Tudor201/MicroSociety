@@ -36,4 +36,6 @@ add_executable(MicroSociety src/main.cpp
         core/Grid.h
         core/CellType.h
         core/SimulationConfig.cpp
-        core/SimulationConfig.h)
+        core/SimulationConfig.h
+        systems/StatisticsManager.cpp
+        systems/StatisticsManager.h)

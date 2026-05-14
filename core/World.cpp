@@ -109,3 +109,7 @@ int World::getWidth() const {
 int World::getHeight() const {
     return height;
 }
+
+const std::vector<std::unique_ptr<Agent>>& World::getAgents() const {
+    return agents;
+}

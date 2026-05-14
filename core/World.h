@@ -28,6 +28,8 @@ public:
     int getAgentCount() const;
     int getWidth() const;
     int getHeight() const;
+
+    const std::vector<std::unique_ptr<Agent>>& getAgents() const;
 };
 
 #endif //MICROSOCIETY_WORLD_H

@@ -28,4 +28,5 @@ void Simulation::update() {
 
 void Simulation::display() const {
     world.display();
+    statisticsManager.displayStatistics(world);
 }
