@@ -4,8 +4,12 @@
 #include <iostream>
 #include <utility>
 
-World::World() {
-    std::cout << "World created.\n";
+World::World()
+    : width(10),
+      height(10),
+      terrain(width, height, CellType::Empty) {
+    std::cout << "World created with size "
+              << width << " x " << height << ".\n";
 }
 
 void World::spawnInitialAgents() {
@@ -39,15 +43,66 @@ void World::update() {
 }
 
 void World::display() const {
-    std::cout << "\n--- World state ---\n";
+    std::cout << "\n--- World map ---\n";
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            bool hasAgent = false;
+
+            for (const auto& agent : agents) {
+                Position position = agent->getPosition();
+
+                if (position.x == x && position.y == y) {
+                    hasAgent = true;
+                    break;
+                }
+            }
+
+            if (hasAgent) {
+                std::cout << "A ";
+            } else {
+                std::cout << ". ";
+            }
+        }
+
+        std::cout << '\n';
+    }
+
+    std::cout << "\n--- Agents ---\n";
 
     for (const auto& agent : agents) {
         agent->display();
     }
 
-    std::cout << "-------------------\n\n";
+    std::cout << "--------------\n\n";
+}
+
+bool World::isInside(const Position& position) const {
+    return terrain.isInside(position.x, position.y);
+}
+
+bool World::moveAgent(Agent& agent, int dx, int dy) {
+    Position newPosition = agent.getPosition();
+
+    newPosition.x += dx;
+    newPosition.y += dy;
+
+    if (!isInside(newPosition)) {
+        return false;
+    }
+
+    agent.setPosition(newPosition);
+    return true;
 }
 
 int World::getAgentCount() const {
     return static_cast<int>(agents.size());
+}
+
+int World::getWidth() const {
+    return width;
+}
+
+int World::getHeight() const {
+    return height;
 }
