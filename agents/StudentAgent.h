@@ -20,6 +20,8 @@ public:
 
     void study();
     int getKnowledgeLevel() const;
+    const std::string& getUniversity() const;
+    void setKnowledgeLevel(int newKnowledgeLevel);
 };
 
 #endif //MICROSOCIETY_STUDENTAGENT_H

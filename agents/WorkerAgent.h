@@ -20,6 +20,7 @@ public:
 
     void earnMoney();
     int getSalary() const;
+    const std::string& getJobName() const;
 };
 
 #endif //MICROSOCIETY_WORKERAGENT_H

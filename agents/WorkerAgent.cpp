@@ -40,3 +40,7 @@ int WorkerAgent::getSalary() const {
 std::string WorkerAgent::getType() const {
     return "Worker";
 }
+
+const std::string& WorkerAgent::getJobName() const {
+    return jobName;
+}

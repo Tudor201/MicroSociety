@@ -42,3 +42,15 @@ int StudentAgent::getKnowledgeLevel() const {
 std::string StudentAgent::getType() const {
     return "Student";
 }
+
+const std::string& StudentAgent::getUniversity() const {
+    return university;
+}
+
+void StudentAgent::setKnowledgeLevel(int newKnowledgeLevel) {
+    if (newKnowledgeLevel < 0) {
+        knowledgeLevel = 0;
+    } else {
+        knowledgeLevel = newKnowledgeLevel;
+    }
+}
