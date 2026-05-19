@@ -10,7 +10,8 @@ SimulationConfig::SimulationConfig()
       maxPopulation(25),
       reproductionChancePercent(15),
       ticksPerYear(12),
-      adultAge(18){}
+      adultAge(18),
+      maxBirthsPerTick(2) {}
 
 SimulationConfig& SimulationConfig::getInstance() {
     static SimulationConfig instance;
@@ -55,4 +56,8 @@ int SimulationConfig::getTicksPerYear() const {
 
 int SimulationConfig::getAdultAge() const {
     return adultAge;
+}
+
+int SimulationConfig::getMaxBirthsPerTick() const {
+    return maxBirthsPerTick;
 }

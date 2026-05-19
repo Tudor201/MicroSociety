@@ -183,22 +183,44 @@ void World::removeDeadAgents() {
 void World::handleReproduction() {
     SimulationConfig& config = SimulationConfig::getInstance();
     RandomGenerator& random = RandomGenerator::getInstance();
-    int adultAge = config.getAdultAge();
 
     if (getAgentCount() >= config.getMaxPopulation()) {
         return;
     }
 
+    int adultAge = config.getAdultAge();
+    int maxBirthsPerTick = config.getMaxBirthsPerTick();
+    int birthsThisTick = 0;
+
+    std::vector<int> usedParentIds;
     std::vector<std::unique_ptr<Agent>> newborns;
 
     for (size_t i = 0; i < agents.size(); i++) {
+        if (birthsThisTick >= maxBirthsPerTick) {
+            break;
+        }
+
         for (size_t j = i + 1; j < agents.size(); j++) {
+            if (birthsThisTick >= maxBirthsPerTick) {
+                break;
+            }
+
             if (getAgentCount() + static_cast<int>(newborns.size()) >= config.getMaxPopulation()) {
                 break;
             }
 
             Agent& first = *agents[i];
             Agent& second = *agents[j];
+
+            bool firstAlreadyUsed =
+                std::find(usedParentIds.begin(), usedParentIds.end(), first.getId()) != usedParentIds.end();
+
+            bool secondAlreadyUsed =
+                std::find(usedParentIds.begin(), usedParentIds.end(), second.getId()) != usedParentIds.end();
+
+            if (firstAlreadyUsed || secondAlreadyUsed) {
+                continue;
+            }
 
             if (!first.isAlive() || !second.isAlive()) {
                 continue;
@@ -255,6 +277,7 @@ void World::handleReproduction() {
             if (child != nullptr) {
                 child->setPosition(p1);
                 child->setAge(0);
+                child->setTicksLived(0);
 
                 child->changeMoney(20 - child->getMoney());
                 child->changeHunger(20 - child->getHunger());
@@ -266,6 +289,11 @@ void World::handleReproduction() {
                 second.changeEnergy(-10);
                 first.changeMoney(-10);
                 second.changeMoney(-10);
+
+                usedParentIds.push_back(first.getId());
+                usedParentIds.push_back(second.getId());
+
+                birthsThisTick++;
 
                 EventBus::getInstance().publish(
                     SimulationEvent(
