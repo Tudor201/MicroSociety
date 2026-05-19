@@ -25,10 +25,34 @@ void StatisticsManager::displayStatistics(const World& world) const {
 
     int aliveCount = countMatching(
         agents,
-        [](const std::unique_ptr<Agent>& agent) {
+        [](const auto& agent) {
             return agent->isAlive();
         }
     );
+
+    int workerCount = countMatching(
+        agents,
+        [](const auto& agent) {
+            return agent->isAlive() && agent->getType() == "Worker";
+        }
+    );
+
+    int traderCount = countMatching(
+        agents,
+        [](const auto& agent) {
+            return agent->isAlive() && agent->getType() == "Trader";
+        }
+    );
+
+    int studentCount = countMatching(
+        agents,
+        [](const auto& agent) {
+            return agent->isAlive() && agent->getType() == "Student";
+        }
+    );
+
+    const Agent* richestAgent = nullptr;
+    const Agent* oldestAgent = nullptr;
 
     for (const auto& agent : agents) {
         totalHunger += agent->getHunger();
@@ -37,6 +61,16 @@ void StatisticsManager::displayStatistics(const World& world) const {
         totalHappiness += agent->getHappiness();
         totalHealth += agent->getHealth();
         totalAge += agent->getAge();
+
+        if (agent->isAlive()) {
+            if (richestAgent == nullptr || agent->getMoney() > richestAgent->getMoney()) {
+                richestAgent = agent.get();
+            }
+
+            if (oldestAgent == nullptr || agent->getAge() > oldestAgent->getAge()) {
+                oldestAgent = agent.get();
+            }
+        }
     }
 
     double agentCount = static_cast<double>(agents.size());
@@ -47,7 +81,24 @@ void StatisticsManager::displayStatistics(const World& world) const {
     std::cout << "\n--- Statistics ---\n";
     std::cout << "Population: " << agents.size() << '\n';
     std::cout << "Alive agents: " << aliveCount << '\n';
+
+    std::cout << "Workers: " << workerCount << '\n';
+    std::cout << "Traders: " << traderCount << '\n';
+    std::cout << "Students: " << studentCount << '\n';
+
     std::cout << "Max agents in one cell: " << maxAgentsInCell << '\n';
+
+    if (richestAgent != nullptr) {
+        std::cout << "Richest agent: #" << richestAgent->getId()
+                  << " (" << richestAgent->getType()
+                  << "), money = " << richestAgent->getMoney() << '\n';
+    }
+
+    if (oldestAgent != nullptr) {
+        std::cout << "Oldest agent: #" << oldestAgent->getId()
+                  << " (" << oldestAgent->getType()
+                  << "), age = " << oldestAgent->getAge() << '\n';
+    }
 
     std::cout << std::fixed << std::setprecision(2);
 
