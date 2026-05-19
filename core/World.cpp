@@ -85,24 +85,19 @@ void World::update() {
 void World::display() const {
     std::cout << "\n--- World map ---\n";
 
+    Grid<char> displayMap(width, height, '.');
+
+    for (const auto& agent : agents) {
+        Position position = agent->getPosition();
+
+        if (agent->isAlive() && displayMap.isInside(position.x, position.y)) {
+            displayMap.at(position.x, position.y) = 'A';
+        }
+    }
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            bool hasAgent = false;
-
-            for (const auto& agent : agents) {
-                Position position = agent->getPosition();
-
-                if (position.x == x && position.y == y) {
-                    hasAgent = true;
-                    break;
-                }
-            }
-
-            if (hasAgent) {
-                std::cout << "A ";
-            } else {
-                std::cout << ". ";
-            }
+            std::cout << displayMap.at(x, y) << ' ';
         }
 
         std::cout << '\n';

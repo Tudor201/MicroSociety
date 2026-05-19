@@ -26,6 +26,18 @@ std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
 
     std::unique_ptr<Agent> agent;
 
+    std::string workerJobName;
+
+    int jobChoice = random.getInt(0, 2);
+
+    if (jobChoice == 0) {
+        workerJobName = "Builder";
+    } else if (jobChoice == 1) {
+        workerJobName = "Engineer";
+    } else {
+        workerJobName = "Mechanic";
+    }
+
     switch (type) {
         case AgentType::Worker:
             agent = std::make_unique<WorkerAgent>(
@@ -33,7 +45,7 @@ std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
                 "Worker_" + std::to_string(id),
                 position,
                 random.getInt(20, 45),
-                "Builder"
+                workerJobName
             );
             break;
 
