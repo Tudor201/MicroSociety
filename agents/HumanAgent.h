@@ -18,6 +18,9 @@ public:
 
     void update(World& world) override;
     void display() const override;
+    std::string performWork() override = 0;
+    bool canEarnMoney() const override = 0;
+    bool canWorkWithoutEarning() const override = 0;
 
     const std::string& getName() const;
 };

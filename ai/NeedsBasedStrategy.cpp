@@ -1,9 +1,6 @@
 #include "NeedsBasedStrategy.h"
 
 #include "../agents/Agent.h"
-#include "../agents/WorkerAgent.h"
-#include "../agents/TraderAgent.h"
-#include "../agents/StudentAgent.h"
 
 #include "../actions/EatAction.h"
 #include "../actions/RestAction.h"
@@ -19,12 +16,6 @@ std::unique_ptr<Action> NeedsBasedStrategy::chooseAction(Agent& agent, World& wo
 
     const int foodPrice = SimulationConfig::getInstance().getFoodPrice();
 
-    bool isWorker = dynamic_cast<WorkerAgent*>(&agent) != nullptr;
-    bool isTrader = dynamic_cast<TraderAgent*>(&agent) != nullptr;
-    bool isStudent = dynamic_cast<StudentAgent*>(&agent) != nullptr;
-
-    bool canEarnMoney = isWorker || isTrader;
-
     if (agent.getHealth() < 45) {
         return std::make_unique<RestAction>();
     }
@@ -38,7 +29,7 @@ std::unique_ptr<Action> NeedsBasedStrategy::chooseAction(Agent& agent, World& wo
             return std::make_unique<EatAction>();
         }
 
-        if (agent.isAdult() && canEarnMoney) {
+        if (agent.isAdult() && agent.canEarnMoney()) {
             return std::make_unique<WorkAction>();
         }
 
@@ -49,11 +40,11 @@ std::unique_ptr<Action> NeedsBasedStrategy::chooseAction(Agent& agent, World& wo
         return std::make_unique<MoveAction>();
     }
 
-    if (canEarnMoney && agent.getMoney() < 150) {
+    if (agent.canEarnMoney() && agent.getMoney() < 150) {
         return std::make_unique<WorkAction>();
     }
 
-    if (isStudent && agent.getEnergy() > 45 && agent.getHappiness() > 35 && agent.getMoney() > foodPrice + 5) {
+    if (agent.canWorkWithoutEarning() && agent.getEnergy() > 45 && agent.getHappiness() > 35 && agent.getMoney() > foodPrice + 5) {
         return std::make_unique<WorkAction>();
     }
 

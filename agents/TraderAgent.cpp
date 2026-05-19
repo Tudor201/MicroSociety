@@ -28,6 +28,24 @@ std::unique_ptr<Agent> TraderAgent::clone() const {
     return std::make_unique<TraderAgent>(*this);
 }
 
+std::string TraderAgent::performWork() {
+    makeTrade();
+
+    changeHunger(5);
+    changeEnergy(-8);
+    changeHappiness(2);
+
+    return "made a trade.";
+}
+
+bool TraderAgent::canEarnMoney() const {
+    return true;
+}
+
+bool TraderAgent::canWorkWithoutEarning() const {
+    return false;
+}
+
 void TraderAgent::makeTrade() {
     changeMoney(profitPerTrade);
 }

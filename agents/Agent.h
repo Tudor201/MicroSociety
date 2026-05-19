@@ -43,6 +43,9 @@ public:
     virtual void display() const = 0;
     virtual std::unique_ptr<Agent> clone() const = 0;
     virtual std::string getType() const = 0;
+    virtual std::string performWork() = 0;
+    virtual bool canEarnMoney() const = 0;
+    virtual bool canWorkWithoutEarning() const = 0;
 
     int getId() const;
     Position getPosition() const;

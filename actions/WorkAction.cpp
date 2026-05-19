@@ -1,8 +1,5 @@
 #include "WorkAction.h"
 #include "../agents/Agent.h"
-#include "../agents/WorkerAgent.h"
-#include "../agents/TraderAgent.h"
-#include "../agents/StudentAgent.h"
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
 
@@ -29,77 +26,16 @@ void WorkAction::execute(Agent& agent, World& world) {
         return;
     }
 
-    if (auto worker = dynamic_cast<WorkerAgent*>(&agent)) {
-        worker->earnMoney();
-
-        agent.changeHunger(7);
-        agent.changeEnergy(-10);
-        agent.changeHappiness(1);
-
-        std::cout << "Agent #" << agent.getId()
-                  << " worked and earned money.\n";
-
-        EventBus::getInstance().publish(
-            SimulationEvent(
-                EventType::AgentWorked,
-                agent.getId(),
-                "Agent #" + std::to_string(agent.getId()) + " worked and earned money."
-            )
-        );
-
-        return;
-    }
-
-    if (auto trader = dynamic_cast<TraderAgent*>(&agent)) {
-        trader->makeTrade();
-
-        agent.changeHunger(5);
-        agent.changeEnergy(-8);
-        agent.changeHappiness(2);
-
-        std::cout << "Agent #" << agent.getId()
-                  << " made a trade.\n";
-
-        EventBus::getInstance().publish(
-            SimulationEvent(
-                EventType::AgentWorked,
-                agent.getId(),
-                "Agent #" + std::to_string(agent.getId()) + " made a trade."
-            )
-        );
-
-        return;
-    }
-
-    if (auto student = dynamic_cast<StudentAgent*>(&agent)) {
-        student->study();
-
-        agent.changeHunger(4);
-        agent.changeEnergy(-7);
-        agent.changeMoney(-2);
-
-        std::cout << "Agent #" << agent.getId()
-                  << " studied.\n";
-
-        EventBus::getInstance().publish(
-            SimulationEvent(
-                EventType::AgentWorked,
-                agent.getId(),
-                "Agent #" + std::to_string(agent.getId()) + " studied."
-            )
-        );
-
-        return;
-    }
+    std::string result = agent.performWork();
 
     std::cout << "Agent #" << agent.getId()
-              << " cannot perform this action.\n";
+              << " " << result << '\n';
 
     EventBus::getInstance().publish(
         SimulationEvent(
-            EventType::AgentFailedAction,
+            EventType::AgentWorked,
             agent.getId(),
-            "Agent #" + std::to_string(agent.getId()) + " could not perform work action."
+            "Agent #" + std::to_string(agent.getId()) + " " + result
         )
     );
 }

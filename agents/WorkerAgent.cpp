@@ -29,6 +29,24 @@ std::unique_ptr<Agent> WorkerAgent::clone() const {
     return std::make_unique<WorkerAgent>(*this);
 }
 
+std::string WorkerAgent::performWork() {
+    earnMoney();
+
+    changeHunger(7);
+    changeEnergy(-10);
+    changeHappiness(1);
+
+    return "worked and earned money.";
+}
+
+bool WorkerAgent::canEarnMoney() const {
+    return true;
+}
+
+bool WorkerAgent::canWorkWithoutEarning() const {
+    return false;
+}
+
 void WorkerAgent::earnMoney() {
     changeMoney(salary);
 }

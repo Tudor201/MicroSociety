@@ -30,6 +30,24 @@ std::unique_ptr<Agent> StudentAgent::clone() const {
     return std::make_unique<StudentAgent>(*this);
 }
 
+std::string StudentAgent::performWork() {
+    study();
+
+    changeHunger(4);
+    changeEnergy(-7);
+    changeMoney(-2);
+
+    return "studied.";
+}
+
+bool StudentAgent::canEarnMoney() const {
+    return false;
+}
+
+bool StudentAgent::canWorkWithoutEarning() const {
+    return true;
+}
+
 void StudentAgent::study() {
     knowledgeLevel += 10;
     changeHappiness(2);

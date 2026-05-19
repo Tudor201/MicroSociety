@@ -16,6 +16,9 @@ public:
     void display() const override;
     std::unique_ptr<Agent> clone() const override;
     std::string getType() const override;
+    std::string performWork() override;
+    bool canEarnMoney() const override;
+    bool canWorkWithoutEarning() const override;
 
     void makeTrade();
     int getProfitPerTrade() const;
