@@ -1,0 +1,12 @@
+mapWidth 10
+mapHeight 10
+initialPopulation 6
+maxTicks 10
+foodPrice 10
+maxAge 90
+maxPopulation 25
+reproductionChancePercent 15
+ticksPerYear 12
+adultAge 18
+maxBirthsPerTick 2
+livingCostPerTick 2

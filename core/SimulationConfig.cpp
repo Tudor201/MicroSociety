@@ -1,5 +1,8 @@
 #include "SimulationConfig.h"
 
+#include <fstream>
+#include <string>
+
 SimulationConfig::SimulationConfig()
     : mapWidth(10),
       mapHeight(10),
@@ -12,7 +15,49 @@ SimulationConfig::SimulationConfig()
       ticksPerYear(12),
       adultAge(18),
       maxBirthsPerTick(2),
-      livingCostPerTick(2) {}
+      livingCostPerTick(2) {
+
+    std::ifstream fin("data/config.txt");
+
+    if (!fin.is_open()) {
+        fin.open("../data/config.txt");
+    }
+
+    if (!fin.is_open()) {
+        return;
+    }
+
+    std::string key;
+    int value;
+
+    while (fin >> key >> value) {
+        if (key == "mapWidth") {
+            mapWidth = value;
+        } else if (key == "mapHeight") {
+            mapHeight = value;
+        } else if (key == "initialPopulation") {
+            initialPopulation = value;
+        } else if (key == "maxTicks") {
+            maxTicks = value;
+        } else if (key == "foodPrice") {
+            foodPrice = value;
+        } else if (key == "maxAge") {
+            maxAge = value;
+        } else if (key == "maxPopulation") {
+            maxPopulation = value;
+        } else if (key == "reproductionChancePercent") {
+            reproductionChancePercent = value;
+        } else if (key == "ticksPerYear") {
+            ticksPerYear = value;
+        } else if (key == "adultAge") {
+            adultAge = value;
+        } else if (key == "maxBirthsPerTick") {
+            maxBirthsPerTick = value;
+        } else if (key == "livingCostPerTick") {
+            livingCostPerTick = value;
+        }
+    }
+}
 
 SimulationConfig& SimulationConfig::getInstance() {
     static SimulationConfig instance;
