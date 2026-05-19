@@ -1,7 +1,9 @@
 #ifndef MICROSOCIETY_GRID_H
 #define MICROSOCIETY_GRID_H
-#include <vector>
+
 #include <stdexcept>
+#include <type_traits>
+#include <vector>
 
 template <typename T>
 class Grid {
@@ -15,6 +17,11 @@ public:
         : width(width),
           height(height),
           cells(height, std::vector<T>(width, defaultValue)) {
+        static_assert(
+            std::is_default_constructible_v<T>,
+            "Grid requires default constructible types."
+        );
+
         if (width <= 0 || height <= 0) {
             throw std::invalid_argument("Grid dimensions must be positive.");
         }
@@ -38,6 +45,26 @@ public:
         }
 
         return cells[y][x];
+    }
+
+    void fill(const T& value) {
+        for (auto& row : cells) {
+            for (auto& cell : row) {
+                cell = value;
+            }
+        }
+    }
+
+    std::vector<T> flatten() const {
+        std::vector<T> result;
+
+        for (const auto& row : cells) {
+            for (const auto& cell : row) {
+                result.push_back(cell);
+            }
+        }
+
+        return result;
     }
 
     int getWidth() const {

@@ -10,6 +10,7 @@ class HumanAgent : public Agent {
 protected:
     std::string name;
     std::shared_ptr<DecisionStrategy> strategy;
+    std::weak_ptr<DecisionStrategy> strategyObserver;
 
 public:
     HumanAgent(int id, const std::string& name, const Position& position);

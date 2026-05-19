@@ -1,6 +1,7 @@
 #include "StatisticsManager.h"
 #include "../core/World.h"
 #include "../agents/Agent.h"
+#include "../utils/TemplateUtils.h"
 
 #include <iostream>
 #include <iomanip>
@@ -21,7 +22,13 @@ void StatisticsManager::displayStatistics(const World& world) const {
     double totalHappiness = 0;
     double totalHealth = 0;
     double totalAge = 0;
-    int aliveCount = 0;
+
+    int aliveCount = countMatching(
+        agents,
+        [](const std::unique_ptr<Agent>& agent) {
+            return agent->isAlive();
+        }
+    );
 
     for (const auto& agent : agents) {
         totalHunger += agent->getHunger();
@@ -30,17 +37,17 @@ void StatisticsManager::displayStatistics(const World& world) const {
         totalHappiness += agent->getHappiness();
         totalHealth += agent->getHealth();
         totalAge += agent->getAge();
-
-        if (agent->isAlive()) {
-            aliveCount++;
-        }
     }
 
     double agentCount = static_cast<double>(agents.size());
 
+    std::vector<int> densityValues = world.getPopulationDensity().flatten();
+    int maxAgentsInCell = findMax(densityValues);
+
     std::cout << "\n--- Statistics ---\n";
     std::cout << "Population: " << agents.size() << '\n';
     std::cout << "Alive agents: " << aliveCount << '\n';
+    std::cout << "Max agents in one cell: " << maxAgentsInCell << '\n';
 
     std::cout << std::fixed << std::setprecision(2);
 

@@ -13,8 +13,11 @@ private:
     int width;
     int height;
     Grid<CellType> terrain;
+    Grid<int> populationDensity;
     std::vector<std::unique_ptr<Agent>> agents;
     int nextAgentId;
+
+    void recalculatePopulationDensity();
 
 public:
     World();
@@ -37,6 +40,7 @@ public:
     void handleReproduction();
     void applyLivingCosts();
 
+    const Grid<int>& getPopulationDensity() const;
     const std::vector<std::unique_ptr<Agent>>& getAgents() const;
 };
 

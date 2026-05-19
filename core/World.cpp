@@ -15,10 +15,20 @@
 World::World()
     : width(SimulationConfig::getInstance().getMapWidth()),
       height(SimulationConfig::getInstance().getMapHeight()),
-      nextAgentId(1),
-      terrain(width, height, CellType::Empty) {
-    std::cout << "World created with size "
-              << width << " x " << height << ".\n";
+      terrain(width, height, CellType::Empty),
+      populationDensity(width, height, 0),
+      nextAgentId(1) {}
+
+void World::recalculatePopulationDensity() {
+    populationDensity.fill(0);
+
+    for (const auto& agent : agents) {
+        Position position = agent->getPosition();
+
+        if (agent->isAlive() && populationDensity.isInside(position.x, position.y)) {
+            populationDensity.at(position.x, position.y)++;
+        }
+    }
 }
 
 void World::spawnInitialAgents() {
@@ -53,6 +63,7 @@ void World::spawnInitialAgents() {
         }
     }
 
+    recalculatePopulationDensity();
     std::cout << agents.size() << " agents spawned.\n";
 }
 
@@ -68,6 +79,7 @@ void World::update() {
     applyLivingCosts();
     removeDeadAgents();
     handleReproduction();
+    recalculatePopulationDensity();
 }
 
 void World::display() const {
@@ -108,6 +120,7 @@ void World::display() const {
 void World::clearAgents() {
     agents.clear();
     nextAgentId = 1;
+    recalculatePopulationDensity();
 }
 
 void World::addAgent(std::unique_ptr<Agent> agent) {
@@ -117,6 +130,7 @@ void World::addAgent(std::unique_ptr<Agent> agent) {
         }
 
         agents.push_back(std::move(agent));
+        recalculatePopulationDensity();
     }
 }
 
@@ -135,6 +149,7 @@ bool World::moveAgent(Agent& agent, int dx, int dy) {
     }
 
     agent.setPosition(newPosition);
+    recalculatePopulationDensity();
     return true;
 }
 
@@ -148,6 +163,10 @@ int World::getWidth() const {
 
 int World::getHeight() const {
     return height;
+}
+
+const Grid<int>& World::getPopulationDensity() const {
+    return populationDensity;
 }
 
 const std::vector<std::unique_ptr<Agent>>& World::getAgents() const {
