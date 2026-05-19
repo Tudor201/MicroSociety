@@ -64,6 +64,50 @@ SimulationConfig& SimulationConfig::getInstance() {
     return instance;
 }
 
+bool SimulationConfig::setValue(const std::string& key, int value) {
+    if (key == "mapWidth") {
+        if (value <= 0) return false;
+        mapWidth = value;
+    } else if (key == "mapHeight") {
+        if (value <= 0) return false;
+        mapHeight = value;
+    } else if (key == "initialPopulation") {
+        if (value < 0) return false;
+        initialPopulation = value;
+    } else if (key == "maxTicks") {
+        if (value <= 0) return false;
+        maxTicks = value;
+    } else if (key == "foodPrice") {
+        if (value < 0) return false;
+        foodPrice = value;
+    } else if (key == "maxAge") {
+        if (value <= 0) return false;
+        maxAge = value;
+    } else if (key == "maxPopulation") {
+        if (value <= 0) return false;
+        maxPopulation = value;
+    } else if (key == "reproductionChancePercent") {
+        if (value < 0 || value > 100) return false;
+        reproductionChancePercent = value;
+    } else if (key == "ticksPerYear") {
+        if (value <= 0) return false;
+        ticksPerYear = value;
+    } else if (key == "adultAge") {
+        if (value < 0) return false;
+        adultAge = value;
+    } else if (key == "maxBirthsPerTick") {
+        if (value < 0) return false;
+        maxBirthsPerTick = value;
+    } else if (key == "livingCostPerTick") {
+        if (value < 0) return false;
+        livingCostPerTick = value;
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 int SimulationConfig::getMapWidth() const {
     return mapWidth;
 }

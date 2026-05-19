@@ -1,6 +1,6 @@
 #ifndef MICROSOCIETY_SIMULATIONCONFIG_H
 #define MICROSOCIETY_SIMULATIONCONFIG_H
-
+#include <string>
 class SimulationConfig {
 private:
     int mapWidth;
@@ -36,6 +36,8 @@ public:
     int getAdultAge() const;
     int getMaxBirthsPerTick() const;
     int getLivingCostPerTick() const;
+
+    bool setValue(const std::string& key, int value);
 };
 
 #endif //MICROSOCIETY_SIMULATIONCONFIG_H
