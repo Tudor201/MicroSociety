@@ -18,6 +18,10 @@ std::unique_ptr<Action> NeedsBasedStrategy::chooseAction(Agent& agent, World& wo
         return std::make_unique<EatAction>();
     }
 
+    if (!agent.isAdult()) {
+        return std::make_unique<MoveAction>();
+    }
+
     if (agent.getMoney() < 150) {
         return std::make_unique<WorkAction>();
     }

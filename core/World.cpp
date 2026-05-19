@@ -183,6 +183,7 @@ void World::removeDeadAgents() {
 void World::handleReproduction() {
     SimulationConfig& config = SimulationConfig::getInstance();
     RandomGenerator& random = RandomGenerator::getInstance();
+    int adultAge = config.getAdultAge();
 
     if (getAgentCount() >= config.getMaxPopulation()) {
         return;
@@ -211,7 +212,7 @@ void World::handleReproduction() {
             bool closeEnough = distance <= 1;
 
             bool firstCanReproduce =
-                first.getAge() >= 18 &&
+                first.getAge() >= adultAge &&
                 first.getAge() <= 60 &&
                 first.getHealth() > 60 &&
                 first.getHappiness() > 70 &&
@@ -219,7 +220,7 @@ void World::handleReproduction() {
                 first.getMoney() > 80;
 
             bool secondCanReproduce =
-                second.getAge() >= 18 &&
+                second.getAge() >= adultAge &&
                 second.getAge() <= 60 &&
                 second.getHealth() > 60 &&
                 second.getHappiness() > 70 &&

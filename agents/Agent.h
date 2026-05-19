@@ -56,6 +56,7 @@ public:
     int getTicksLived() const;
 
     bool isAlive() const;
+    bool isAdult() const;
 
     void setPosition(const Position& newPosition);
     void setAge(int newAge);

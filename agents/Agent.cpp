@@ -74,6 +74,10 @@ bool Agent::isAlive() const {
     return alive;
 }
 
+bool Agent::isAdult() const {
+    return age >= SimulationConfig::getInstance().getAdultAge();
+}
+
 void Agent::setPosition(const Position& newPosition) {
     position = newPosition;
 }

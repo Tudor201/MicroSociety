@@ -12,6 +12,7 @@ private:
     int maxPopulation;
     int reproductionChancePercent;
     int ticksPerYear;
+    int adultAge;
 
     SimulationConfig();
 
@@ -30,6 +31,7 @@ public:
     int getMaxPopulation() const;
     int getReproductionChancePercent() const;
     int getTicksPerYear() const;
+    int getAdultAge() const;
 };
 
 #endif //MICROSOCIETY_SIMULATIONCONFIG_H
