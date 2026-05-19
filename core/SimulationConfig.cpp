@@ -8,7 +8,8 @@ SimulationConfig::SimulationConfig()
       foodPrice(10),
       maxAge(90),
       maxPopulation(25),
-      reproductionChancePercent(15) {}
+      reproductionChancePercent(15),
+      ticksPerYear(12) {}
 
 SimulationConfig& SimulationConfig::getInstance() {
     static SimulationConfig instance;
@@ -45,4 +46,8 @@ int SimulationConfig::getMaxPopulation() const {
 
 int SimulationConfig::getReproductionChancePercent() const {
     return reproductionChancePercent;
+}
+
+int SimulationConfig::getTicksPerYear() const {
+    return ticksPerYear;
 }

@@ -1,4 +1,5 @@
 #include "Agent.h"
+#include "../core/SimulationConfig.h"
 
 int Agent::clampValue(int value, int minValue, int maxValue) {
     if (value < minValue) {
@@ -30,6 +31,7 @@ Agent::Agent(
       happiness(clampValue(happiness, 0, 100)),
       health(clampValue(health, 0, 100)),
       age(age),
+      ticksLived(0),
       alive(true) {}
 
 int Agent::getId() const {
@@ -64,6 +66,10 @@ int Agent::getAge() const {
     return age;
 }
 
+int Agent::getTicksLived() const {
+    return ticksLived;
+}
+
 bool Agent::isAlive() const {
     return alive;
 }
@@ -77,6 +83,14 @@ void Agent::setAge(int newAge) {
         age = 0;
     } else {
         age = newAge;
+    }
+}
+
+void Agent::setTicksLived(int newTicksLived) {
+    if (newTicksLived < 0) {
+        ticksLived = 0;
+    } else {
+        ticksLived = newTicksLived;
     }
 }
 
@@ -110,7 +124,17 @@ void Agent::changeHealth(int amount) {
 }
 
 void Agent::updateLifeStatus() {
-    age++;
+    ticksLived++;
+
+    int ticksPerYear = SimulationConfig::getInstance().getTicksPerYear();
+
+    if (ticksPerYear <= 0) {
+        ticksPerYear = 12;
+    }
+
+    if (ticksLived % ticksPerYear == 0) {
+        age++;
+    }
 
     if (hunger > 80) {
         changeHealth(-5);

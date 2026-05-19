@@ -19,6 +19,7 @@ protected:
 
     int health;
     int age;
+    int ticksLived;
     bool alive;
 
 private:
@@ -52,10 +53,13 @@ public:
     int getHappiness() const;
     int getHealth() const;
     int getAge() const;
+    int getTicksLived() const;
+
     bool isAlive() const;
 
     void setPosition(const Position& newPosition);
     void setAge(int newAge);
+    void setTicksLived(int newTicksLived);
 
     void moveBy(int dx, int dy);
 
