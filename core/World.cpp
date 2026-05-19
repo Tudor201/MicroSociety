@@ -65,6 +65,7 @@ void World::update() {
         }
     }
 
+    applyLivingCosts();
     removeDeadAgents();
     handleReproduction();
 }
@@ -310,5 +311,41 @@ void World::handleReproduction() {
 
     for (auto& newborn : newborns) {
         agents.push_back(std::move(newborn));
+    }
+}
+
+void World::applyLivingCosts() {
+    int livingCost = SimulationConfig::getInstance().getLivingCostPerTick();
+
+    if (livingCost <= 0) {
+        return;
+    }
+
+    for (auto& agent : agents) {
+        if (!agent->isAlive()) {
+            continue;
+        }
+
+        if (agent->getMoney() >= livingCost) {
+            agent->changeMoney(-livingCost);
+        } else {
+            int currentMoney = agent->getMoney();
+
+            if (currentMoney > 0) {
+                agent->changeMoney(-currentMoney);
+            }
+
+            agent->changeHunger(4);
+            agent->changeHappiness(-3);
+            agent->changeHealth(-2);
+
+            EventBus::getInstance().publish(
+                SimulationEvent(
+                    EventType::AgentFailedAction,
+                    agent->getId(),
+                    "Agent #" + std::to_string(agent->getId()) + " could not afford the living cost."
+                )
+            );
+        }
     }
 }

@@ -14,6 +14,7 @@ private:
     int ticksPerYear;
     int adultAge;
     int maxBirthsPerTick;
+    int livingCostPerTick;
 
     SimulationConfig();
 
@@ -34,6 +35,7 @@ public:
     int getTicksPerYear() const;
     int getAdultAge() const;
     int getMaxBirthsPerTick() const;
+    int getLivingCostPerTick() const;
 };
 
 #endif //MICROSOCIETY_SIMULATIONCONFIG_H

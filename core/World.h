@@ -35,6 +35,7 @@ public:
 
     void removeDeadAgents();
     void handleReproduction();
+    void applyLivingCosts();
 
     const std::vector<std::unique_ptr<Agent>>& getAgents() const;
 };
