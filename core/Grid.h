@@ -1,6 +1,6 @@
 #ifndef MICROSOCIETY_GRID_H
 #define MICROSOCIETY_GRID_H
-
+#include "Exceptions.h"
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -33,7 +33,7 @@ public:
 
     T& at(int x, int y) {
         if (!isInside(x, y)) {
-            throw std::out_of_range("Grid position is outside the map.");
+            throw WorldException("Grid position is outside the map.");
         }
 
         return cells[y][x];
@@ -41,7 +41,7 @@ public:
 
     const T& at(int x, int y) const {
         if (!isInside(x, y)) {
-            throw std::out_of_range("Grid position is outside the map.");
+            throw WorldException("Grid position is outside the map.");
         }
 
         return cells[y][x];

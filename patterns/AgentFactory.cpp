@@ -3,10 +3,10 @@
 #include "../agents/WorkerAgent.h"
 #include "../agents/TraderAgent.h"
 #include "../agents/StudentAgent.h"
-
 #include "../core/Position.h"
 #include "../core/SimulationConfig.h"
 #include "../core/RandomGenerator.h"
+#include "../core/Exceptions.h"
 
 #include <memory>
 #include <string>
@@ -84,5 +84,5 @@ std::unique_ptr<Agent> AgentFactory::createAgentFromTypeName(const std::string& 
         return createAgent(AgentType::Student, id);
     }
 
-    return nullptr;
+    throw InvalidAgentException("Unknown agent type: " + typeName);
 }

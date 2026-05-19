@@ -48,4 +48,5 @@ add_executable(MicroSociety src/main.cpp
         systems/SaveManager.h
         core/RandomGenerator.cpp
         core/RandomGenerator.h
-        utils/TemplateUtils.h)
+        utils/TemplateUtils.h
+        core/Exceptions.h)

@@ -2,6 +2,7 @@
 
 #include "../core/World.h"
 #include "../core/Position.h"
+#include "../core/Exceptions.h"
 
 #include "../agents/Agent.h"
 #include "../agents/WorkerAgent.h"
@@ -98,16 +99,14 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
     std::getline(fin, header);
 
     if (header != "MICROSOCIETY_SAVE_V3") {
-        std::cout << "Invalid save file format.\n";
-        return false;
+        throw WorldException("Invalid save file format.");
     }
 
     int agentCount;
     fin >> agentCount;
 
     if (agentCount < 0) {
-        std::cout << "Invalid agent count in save file.\n";
-        return false;
+        throw WorldException("Invalid agent count in save file.");
     }
 
     world.clearAgents();
@@ -138,8 +137,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             >> ticksLived;
 
         if (!fin) {
-            std::cout << "Error while reading common agent data.\n";
-            return false;
+            throw WorldException("Error while reading common agent data.");
         }
 
         std::unique_ptr<Agent> agent;
@@ -151,8 +149,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> salary >> std::quoted(jobName);
 
             if (!fin) {
-                std::cout << "Error while reading Worker data.\n";
-                return false;
+                throw WorldException("Error while reading Worker data.");
             }
 
             agent = std::make_unique<WorkerAgent>(
@@ -168,8 +165,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> profitPerTrade;
 
             if (!fin) {
-                std::cout << "Error while reading Trader data.\n";
-                return false;
+                throw WorldException("Error while reading Trader data.");
             }
 
             agent = std::make_unique<TraderAgent>(
@@ -185,8 +181,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> std::quoted(university) >> knowledgeLevel;
 
             if (!fin) {
-                std::cout << "Error while reading Student data.\n";
-                return false;
+                throw WorldException("Error while reading Student data.");
             }
 
             auto student = std::make_unique<StudentAgent>(
@@ -200,8 +195,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
 
             agent = std::move(student);
         } else {
-            std::cout << "Unknown agent type in save file: " << type << '\n';
-            return false;
+            throw InvalidAgentException("Unknown agent type in save file: " + type);
         }
 
         restoreCommonState(
