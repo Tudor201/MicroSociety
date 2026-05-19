@@ -10,3 +10,4 @@ ticksPerYear 12
 adultAge 18
 maxBirthsPerTick 2
 livingCostPerTick 2
+maxStoredEvents 20

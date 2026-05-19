@@ -15,11 +15,13 @@ SimulationConfig::SimulationConfig()
       ticksPerYear(12),
       adultAge(18),
       maxBirthsPerTick(2),
-      livingCostPerTick(2) {
+      livingCostPerTick(2),
+      maxStoredEvents(20) {
 
     std::ifstream fin("data/config.txt");
 
     if (!fin.is_open()) {
+        fin.clear();
         fin.open("../data/config.txt");
     }
 
@@ -55,6 +57,8 @@ SimulationConfig::SimulationConfig()
             maxBirthsPerTick = value;
         } else if (key == "livingCostPerTick") {
             livingCostPerTick = value;
+        } else if (key == "maxStoredEvents") {
+            maxStoredEvents = value;
         }
     }
 }
@@ -101,6 +105,9 @@ bool SimulationConfig::setValue(const std::string& key, int value) {
     } else if (key == "livingCostPerTick") {
         if (value < 0) return false;
         livingCostPerTick = value;
+    } else if (key == "maxStoredEvents") {
+        if (value <= 0) return false;
+        maxStoredEvents = value;
     } else {
         return false;
     }
@@ -154,4 +161,8 @@ int SimulationConfig::getMaxBirthsPerTick() const {
 
 int SimulationConfig::getLivingCostPerTick() const {
     return livingCostPerTick;
+}
+
+int SimulationConfig::getMaxStoredEvents() const {
+    return maxStoredEvents;
 }

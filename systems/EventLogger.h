@@ -2,12 +2,11 @@
 #define MICROSOCIETY_EVENTLOGGER_H
 #include "../patterns/Event.h"
 
-#include <string>
 #include <vector>
 
 class EventLogger {
 private:
-    std::vector<std::string> recentEvents;
+    std::vector<SimulationEvent> recentEvents;
     int maxStoredEvents;
 
     void subscribeTo(EventType type);

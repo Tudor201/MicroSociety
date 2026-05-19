@@ -5,6 +5,7 @@
 
 enum class EventType {
     AgentSpawned,
+    AgentChoseAction,
     AgentMoved,
     AgentWorked,
     AgentAte,

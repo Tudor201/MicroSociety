@@ -1,6 +1,11 @@
 #include "HumanAgent.h"
 #include "../ai/NeedsBasedStrategy.h"
+
 #include "../actions/Action.h"
+
+#include "../patterns/EventBus.h"
+#include "../patterns/Event.h"
+
 #include <iostream>
 #include <memory>
 
@@ -17,7 +22,13 @@ void HumanAgent::update(World& world) {
         std::unique_ptr<Action> action = observedStrategy->chooseAction(*this, world);
 
         if (action != nullptr) {
-            std::cout << name << " chose action: " << action->getName() << ".\n";
+            EventBus::getInstance().publish(
+            SimulationEvent(
+                EventType::AgentChoseAction,
+                getId(),
+                name + " chose action: " + action->getName() + "."
+                )
+            );
             action->execute(*this, world);
         }
     }

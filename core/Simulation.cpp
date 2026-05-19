@@ -1,6 +1,7 @@
 #include "Simulation.h"
 #include "SimulationConfig.h"
 #include "../patterns/AgentFactory.h"
+#include "Exceptions.h"
 
 #include <iostream>
 #include <limits>
@@ -9,9 +10,16 @@
 
 Simulation::Simulation()
     : running(false), currentTick(0) {
-    if (saveManager.loadWorld(world, "data/save.txt")) {
-        std::cout << "World loaded from save file.\n";
-    } else {
+    try {
+        if (saveManager.loadWorld(world, "data/save.txt")) {
+            std::cout << "World loaded from save file.\n";
+        } else {
+            world.spawnInitialAgents();
+        }
+    } catch (const MicroSocietyException& exception) {
+        std::cout << "Save file error: " << exception.what() << '\n';
+        std::cout << "Starting with a new world.\n";
+        world.clearAgents();
         world.spawnInitialAgents();
     }
 }
@@ -188,10 +196,14 @@ void Simulation::saveLoadMenu() {
             std::cout << "World saved successfully.\n";
         }
     } else if (option == 2) {
-        if (saveManager.loadWorld(world, "data/save.txt")) {
-            std::cout << "World loaded successfully.\n";
-        } else {
-            std::cout << "World could not be loaded.\n";
+        try {
+            if (saveManager.loadWorld(world, "data/save.txt")) {
+                std::cout << "World loaded successfully.\n";
+            } else {
+                std::cout << "Save file does not exist.\n";
+            }
+        } catch (const MicroSocietyException& exception) {
+            std::cout << "Load failed: " << exception.what() << '\n';
         }
     }
 }

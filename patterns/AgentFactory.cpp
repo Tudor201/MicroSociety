@@ -12,6 +12,10 @@
 #include <string>
 
 std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
+    if (id <= 0) {
+        throw InvalidAgentException("Agent id must be positive.");
+    }
+
     RandomGenerator& random = RandomGenerator::getInstance();
     SimulationConfig& config = SimulationConfig::getInstance();
 
@@ -52,21 +56,23 @@ std::unique_ptr<Agent> AgentFactory::createAgent(AgentType type, int id) {
             break;
     }
 
-    if (agent != nullptr) {
-        int randomHunger = random.getInt(10, 80);
-        int randomEnergy = random.getInt(40, 100);
-        int randomMoney = random.getInt(50, 200);
-        int randomHappiness = random.getInt(30, 90);
-        int randomHealth = random.getInt(70, 100);
-        int randomAge = random.getInt(18, 60);
-
-        agent->changeHunger(randomHunger - agent->getHunger());
-        agent->changeEnergy(randomEnergy - agent->getEnergy());
-        agent->changeMoney(randomMoney - agent->getMoney());
-        agent->changeHappiness(randomHappiness - agent->getHappiness());
-        agent->changeHealth(randomHealth - agent->getHealth());
-        agent->setAge(randomAge);
+    if (agent == nullptr) {
+        throw InvalidAgentException("Unknown agent type.");
     }
+
+    int randomHunger = random.getInt(10, 80);
+    int randomEnergy = random.getInt(40, 100);
+    int randomMoney = random.getInt(50, 200);
+    int randomHappiness = random.getInt(30, 90);
+    int randomHealth = random.getInt(70, 100);
+    int randomAge = random.getInt(18, 60);
+
+    agent->changeHunger(randomHunger - agent->getHunger());
+    agent->changeEnergy(randomEnergy - agent->getEnergy());
+    agent->changeMoney(randomMoney - agent->getMoney());
+    agent->changeHappiness(randomHappiness - agent->getHappiness());
+    agent->changeHealth(randomHealth - agent->getHealth());
+    agent->setAge(randomAge);
 
     return agent;
 }

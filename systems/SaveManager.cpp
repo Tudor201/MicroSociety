@@ -48,7 +48,7 @@ bool SaveManager::saveWorld(const World& world, const std::string& filePath) con
     std::ofstream fout(filePath);
 
     if (!fout.is_open()) {
-        std::cout << "Could not open save file for writing.\n";
+        std::cout << "Could not open save file.\n";
         return false;
     }
 
@@ -99,14 +99,14 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
     std::getline(fin, header);
 
     if (header != "MICROSOCIETY_SAVE_V3") {
-        throw WorldException("Invalid save file format.");
+        throw MicroSocietyException("Invalid save file format.");
     }
 
     int agentCount;
     fin >> agentCount;
 
     if (agentCount < 0) {
-        throw WorldException("Invalid agent count in save file.");
+        throw MicroSocietyException("Invalid agent count in save file.");
     }
 
     world.clearAgents();
@@ -137,7 +137,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             >> ticksLived;
 
         if (!fin) {
-            throw WorldException("Error while reading common agent data.");
+            throw MicroSocietyException("Corrupted save file: invalid common agent data.");
         }
 
         std::unique_ptr<Agent> agent;
@@ -149,7 +149,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> salary >> std::quoted(jobName);
 
             if (!fin) {
-                throw WorldException("Error while reading Worker data.");
+                throw MicroSocietyException("Corrupted save file: invalid Worker data.");
             }
 
             agent = std::make_unique<WorkerAgent>(
@@ -165,7 +165,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> profitPerTrade;
 
             if (!fin) {
-                throw WorldException("Error while reading Trader data.");
+                throw MicroSocietyException("Corrupted save file: invalid Trader data.");
             }
 
             agent = std::make_unique<TraderAgent>(
@@ -181,7 +181,7 @@ bool SaveManager::loadWorld(World& world, const std::string& filePath) const {
             fin >> std::quoted(university) >> knowledgeLevel;
 
             if (!fin) {
-                throw WorldException("Error while reading Student data.");
+                throw MicroSocietyException("Corrupted save file: invalid Student data.");
             }
 
             auto student = std::make_unique<StudentAgent>(

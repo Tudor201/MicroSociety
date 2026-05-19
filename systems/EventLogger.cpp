@@ -1,11 +1,13 @@
 #include "EventLogger.h"
 #include "../patterns/EventBus.h"
+#include "../core/SimulationConfig.h"
 
 #include <iostream>
 
 EventLogger::EventLogger()
-    : maxStoredEvents(20) {
+    : maxStoredEvents(SimulationConfig::getInstance().getMaxStoredEvents()) {
     subscribeTo(EventType::AgentSpawned);
+    subscribeTo(EventType::AgentChoseAction);
     subscribeTo(EventType::AgentMoved);
     subscribeTo(EventType::AgentWorked);
     subscribeTo(EventType::AgentAte);
@@ -25,7 +27,7 @@ void EventLogger::subscribeTo(EventType type) {
 }
 
 void EventLogger::logEvent(const SimulationEvent& event) {
-    recentEvents.push_back(event.message);
+    recentEvents.push_back(event);
 
     if (static_cast<int>(recentEvents.size()) > maxStoredEvents) {
         recentEvents.erase(recentEvents.begin());
@@ -48,7 +50,8 @@ void EventLogger::displayRecentEvents(int count) const {
     }
 
     for (int i = start; i < static_cast<int>(recentEvents.size()); i++) {
-        std::cout << "- " << recentEvents[i] << '\n';
+        std::cout << "- Agent #" << recentEvents[i].agentId
+          << ": " << recentEvents[i].message << '\n';
     }
 
     std::cout << "---------------------\n\n";
