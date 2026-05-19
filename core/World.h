@@ -18,6 +18,9 @@ private:
     int nextAgentId;
 
     void recalculatePopulationDensity();
+    bool canReproduce(const Agent& agent) const;
+    std::unique_ptr<Agent> createChild(const Agent& parent1, const Agent& parent2);
+    bool agentIsAlreadyParent(int id, const std::vector<int>& usedParentIds) const;
 
 public:
     World();

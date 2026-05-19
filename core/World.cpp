@@ -200,6 +200,56 @@ void World::removeDeadAgents() {
     );
 }
 
+bool World::canReproduce(const Agent& agent) const {
+    int adultAge = SimulationConfig::getInstance().getAdultAge();
+
+    return agent.isAlive()
+           && agent.getAge() >= adultAge
+           && agent.getAge() <= 60
+           && agent.getHealth() > 60
+           && agent.getHappiness() > 70
+           && agent.getEnergy() > 50
+           && agent.getMoney() > 80;
+}
+
+std::unique_ptr<Agent> World::createChild(const Agent& parent1, const Agent& parent2) {
+    (void)parent2;
+
+    RandomGenerator& random = RandomGenerator::getInstance();
+
+    int typeChoice = random.getInt(0, 2);
+    AgentType childType;
+
+    if (typeChoice == 0) {
+        childType = AgentType::Worker;
+    } else if (typeChoice == 1) {
+        childType = AgentType::Trader;
+    } else {
+        childType = AgentType::Student;
+    }
+
+    int childId = nextAgentId++;
+    std::unique_ptr<Agent> child = AgentFactory::createAgent(childType, childId);
+
+    if (child != nullptr) {
+        child->setPosition(parent1.getPosition());
+        child->setAge(0);
+        child->setTicksLived(0);
+
+        child->changeMoney(20 - child->getMoney());
+        child->changeHunger(20 - child->getHunger());
+        child->changeEnergy(80 - child->getEnergy());
+        child->changeHappiness(70 - child->getHappiness());
+        child->changeHealth(100 - child->getHealth());
+    }
+
+    return child;
+}
+
+bool World::agentIsAlreadyParent(int id, const std::vector<int>& usedParentIds) const {
+    return std::find(usedParentIds.begin(), usedParentIds.end(), id) != usedParentIds.end();
+}
+
 void World::handleReproduction() {
     SimulationConfig& config = SimulationConfig::getInstance();
     RandomGenerator& random = RandomGenerator::getInstance();
@@ -208,123 +258,67 @@ void World::handleReproduction() {
         return;
     }
 
-    int adultAge = config.getAdultAge();
-    int maxBirthsPerTick = config.getMaxBirthsPerTick();
     int birthsThisTick = 0;
-
     std::vector<int> usedParentIds;
     std::vector<std::unique_ptr<Agent>> newborns;
 
     for (size_t i = 0; i < agents.size(); i++) {
-        if (birthsThisTick >= maxBirthsPerTick) {
+        if (birthsThisTick >= config.getMaxBirthsPerTick()) {
             break;
         }
 
         for (size_t j = i + 1; j < agents.size(); j++) {
-            if (birthsThisTick >= maxBirthsPerTick) {
-                break;
-            }
-
-            if (getAgentCount() + static_cast<int>(newborns.size()) >= config.getMaxPopulation()) {
+            if (birthsThisTick >= config.getMaxBirthsPerTick()
+                || getAgentCount() + static_cast<int>(newborns.size()) >= config.getMaxPopulation()) {
                 break;
             }
 
             Agent& first = *agents[i];
             Agent& second = *agents[j];
 
-            bool firstAlreadyUsed =
-                std::find(usedParentIds.begin(), usedParentIds.end(), first.getId()) != usedParentIds.end();
-
-            bool secondAlreadyUsed =
-                std::find(usedParentIds.begin(), usedParentIds.end(), second.getId()) != usedParentIds.end();
-
-            if (firstAlreadyUsed || secondAlreadyUsed) {
-                continue;
-            }
-
-            if (!first.isAlive() || !second.isAlive()) {
+            if (agentIsAlreadyParent(first.getId(), usedParentIds)
+                || agentIsAlreadyParent(second.getId(), usedParentIds)) {
                 continue;
             }
 
             Position p1 = first.getPosition();
             Position p2 = second.getPosition();
-
             int distance = std::abs(p1.x - p2.x) + std::abs(p1.y - p2.y);
 
-            bool closeEnough = distance <= 1;
-
-            bool firstCanReproduce =
-                first.getAge() >= adultAge &&
-                first.getAge() <= 60 &&
-                first.getHealth() > 60 &&
-                first.getHappiness() > 70 &&
-                first.getEnergy() > 50 &&
-                first.getMoney() > 80;
-
-            bool secondCanReproduce =
-                second.getAge() >= adultAge &&
-                second.getAge() <= 60 &&
-                second.getHealth() > 60 &&
-                second.getHappiness() > 70 &&
-                second.getEnergy() > 50 &&
-                second.getMoney() > 80;
-
-            if (!closeEnough || !firstCanReproduce || !secondCanReproduce) {
+            if (distance > 1 || !canReproduce(first) || !canReproduce(second)) {
                 continue;
             }
 
-            int chance = random.getInt(1, 100);
-
-            if (chance > config.getReproductionChancePercent()) {
+            if (random.getInt(1, 100) > config.getReproductionChancePercent()) {
                 continue;
             }
 
-            AgentType childType;
+            std::unique_ptr<Agent> child = createChild(first, second);
 
-            int typeChoice = random.getInt(0, 2);
-
-            if (typeChoice == 0) {
-                childType = AgentType::Worker;
-            } else if (typeChoice == 1) {
-                childType = AgentType::Trader;
-            } else {
-                childType = AgentType::Student;
+            if (child == nullptr) {
+                continue;
             }
 
-            int childId = nextAgentId++;
-            std::unique_ptr<Agent> child = AgentFactory::createAgent(childType, childId);
+            int childId = child->getId();
 
-            if (child != nullptr) {
-                child->setPosition(p1);
-                child->setAge(0);
-                child->setTicksLived(0);
+            first.changeEnergy(-10);
+            second.changeEnergy(-10);
+            first.changeMoney(-10);
+            second.changeMoney(-10);
 
-                child->changeMoney(20 - child->getMoney());
-                child->changeHunger(20 - child->getHunger());
-                child->changeEnergy(80 - child->getEnergy());
-                child->changeHappiness(70 - child->getHappiness());
-                child->changeHealth(100 - child->getHealth());
+            usedParentIds.push_back(first.getId());
+            usedParentIds.push_back(second.getId());
+            birthsThisTick++;
 
-                first.changeEnergy(-10);
-                second.changeEnergy(-10);
-                first.changeMoney(-10);
-                second.changeMoney(-10);
+            EventBus::getInstance().publish(
+                SimulationEvent(
+                    EventType::AgentBorn,
+                    childId,
+                    "Agent #" + std::to_string(childId) + " was born."
+                )
+            );
 
-                usedParentIds.push_back(first.getId());
-                usedParentIds.push_back(second.getId());
-
-                birthsThisTick++;
-
-                EventBus::getInstance().publish(
-                    SimulationEvent(
-                        EventType::AgentBorn,
-                        childId,
-                        "Agent #" + std::to_string(childId) + " was born."
-                    )
-                );
-
-                newborns.push_back(std::move(child));
-            }
+            newborns.push_back(std::move(child));
         }
     }
 
