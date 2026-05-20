@@ -13,7 +13,7 @@ void TraderAgent::update(World& world) {
 void TraderAgent::display() const {
     std::cout << "TraderAgent #" << id
               << " | Name: " << name
-              << " | Position: (" << position.x << ", " << position.y << ")"
+              << " | Position: (" << position.getX() << ", " << position.getY() << ")"
               << " | Hunger: " << hunger
               << " | Energy: " << energy
               << " | Money: " << money

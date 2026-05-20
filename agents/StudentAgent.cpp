@@ -15,7 +15,7 @@ void StudentAgent::display() const {
     std::cout << "StudentAgent #" << id
               << " | Name: " << name
               << " | University: " << university
-              << " | Position: (" << position.x << ", " << position.y << ")"
+              << " | Position: (" << position.getX() << ", " << position.getY() << ")"
               << " | Hunger: " << hunger
               << " | Energy: " << energy
               << " | Money: " << money

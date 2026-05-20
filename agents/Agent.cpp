@@ -99,8 +99,7 @@ void Agent::setTicksLived(int newTicksLived) {
 }
 
 void Agent::moveBy(int dx, int dy) {
-    position.x += dx;
-    position.y += dy;
+    position.moveBy(dx, dy);
 }
 
 void Agent::changeHunger(int amount) {

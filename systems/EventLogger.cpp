@@ -50,8 +50,8 @@ void EventLogger::displayRecentEvents(int count) const {
     }
 
     for (int i = start; i < static_cast<int>(recentEvents.size()); i++) {
-        std::cout << "- Agent #" << recentEvents[i].agentId
-          << ": " << recentEvents[i].message << '\n';
+        std::cout << "- Agent #" << recentEvents[i].getAgentId()
+          << ": " << recentEvents[i].getMessage() << '\n';
     }
 
     std::cout << "---------------------\n\n";

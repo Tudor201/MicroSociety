@@ -10,7 +10,7 @@ void EventBus::subscribe(EventType type, const std::function<void(const Simulati
 }
 
 void EventBus::publish(const SimulationEvent& event) {
-    auto it = subscribers.find(event.type);
+    auto it = subscribers.find(event.getType());
 
     if (it == subscribers.end()) {
         return;

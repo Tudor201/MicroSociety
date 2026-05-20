@@ -39,7 +39,7 @@ void HumanAgent::update(World& world) {
 void HumanAgent::display() const {
     std::cout << "HumanAgent #" << id
               << " | Name: " << name
-              << " | Position: (" << position.x << ", " << position.y << ")"
+              << " | Position: (" << position.getX() << ", " << position.getY() << ")"
               << " | Hunger: " << hunger
               << " | Energy: " << energy
               << " | Money: " << money

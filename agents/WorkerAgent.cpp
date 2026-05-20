@@ -15,7 +15,7 @@ void WorkerAgent::display() const {
     std::cout << "WorkerAgent #" << id
               << " | Name: " << name
               << " | Job: " << jobName
-              << " | Position: (" << position.x << ", " << position.y << ")"
+              << " | Position: (" << position.getX() << ", " << position.getY() << ")"
               << " | Hunger: " << hunger
               << " | Energy: " << energy
               << " | Money: " << money

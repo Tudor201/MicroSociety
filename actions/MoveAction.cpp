@@ -39,9 +39,10 @@ void MoveAction::execute(Agent& agent, World& world) {
         agent.changeHunger(3);
         agent.changeEnergy(-2);
 
+        Position position = agent.getPosition();
         std::cout << "Agent #" << agent.getId() << " moved to position ("
-                  << agent.getPosition().x << ", "
-                  << agent.getPosition().y << ").\n";
+                  << position.getX() << ", "
+                  << position.getY() << ").\n";
 
         EventBus::getInstance().publish(
             SimulationEvent(

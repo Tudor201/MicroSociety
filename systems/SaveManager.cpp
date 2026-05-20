@@ -62,8 +62,8 @@ bool SaveManager::saveWorld(const World& world, const std::string& filePath) con
 
         fout << agent->getType() << ' '
              << agent->getId() << ' '
-             << position.x << ' '
-             << position.y << ' '
+             << position.getX() << ' '
+             << position.getY() << ' '
              << agent->getHunger() << ' '
              << agent->getEnergy() << ' '
              << agent->getMoney() << ' '

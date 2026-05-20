@@ -25,8 +25,8 @@ void World::recalculatePopulationDensity() {
     for (const auto& agent : agents) {
         Position position = agent->getPosition();
 
-        if (agent->isAlive() && populationDensity.isInside(position.x, position.y)) {
-            populationDensity.at(position.x, position.y)++;
+        if (agent->isAlive() && populationDensity.isInside(position.getX(), position.getY())) {
+            populationDensity.at(position.getX(), position.getY())++;
         }
     }
 }
@@ -90,8 +90,8 @@ void World::display() const {
     for (const auto& agent : agents) {
         Position position = agent->getPosition();
 
-        if (agent->isAlive() && displayMap.isInside(position.x, position.y)) {
-            displayMap.at(position.x, position.y) = 'A';
+        if (agent->isAlive() && displayMap.isInside(position.getX(), position.getY())) {
+            displayMap.at(position.getX(), position.getY()) = 'A';
         }
     }
 
@@ -130,14 +130,13 @@ void World::addAgent(std::unique_ptr<Agent> agent) {
 }
 
 bool World::isInside(const Position& position) const {
-    return terrain.isInside(position.x, position.y);
+    return terrain.isInside(position.getX(), position.getY());
 }
 
 bool World::moveAgent(Agent& agent, int dx, int dy) {
     Position newPosition = agent.getPosition();
 
-    newPosition.x += dx;
-    newPosition.y += dy;
+    newPosition.moveBy(dx, dy);
 
     if (!isInside(newPosition)) {
         return false;
@@ -278,7 +277,7 @@ void World::handleReproduction() {
 
             Position p1 = first.getPosition();
             Position p2 = second.getPosition();
-            int distance = std::abs(p1.x - p2.x) + std::abs(p1.y - p2.y);
+            int distance = std::abs(p1.getX() - p2.getX()) + std::abs(p1.getY() - p2.getY());
 
             if (distance > 1 || !canReproduce(first) || !canReproduce(second)) {
                 continue;

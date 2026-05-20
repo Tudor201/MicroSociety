@@ -15,13 +15,27 @@ enum class EventType {
     AgentBorn
 };
 
-struct SimulationEvent {
+class SimulationEvent {
+private:
     EventType type;
     int agentId;
     std::string message;
 
+public:
     SimulationEvent(EventType type, int agentId, const std::string& message)
         : type(type), agentId(agentId), message(message) {}
+
+    EventType getType() const {
+        return type;
+    }
+
+    int getAgentId() const {
+        return agentId;
+    }
+
+    const std::string& getMessage() const {
+        return message;
+    }
 };
 
 #endif //MICROSOCIETY_EVENT_H
