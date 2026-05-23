@@ -12,7 +12,7 @@ Simulation::Simulation()
     : running(false), currentTick(0) {
     try {
         if (saveManager.loadWorld(world, "data/save.txt")) {
-            std::cout << "World loaded from save file.\n";
+            std::cout << "Loaded previous society from save file.\n";
         } else {
             world.spawnInitialAgents();
         }
@@ -31,6 +31,7 @@ int Simulation::readInt(const std::string& message) const {
         std::cout << message;
 
         if (std::cin >> value) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             return value;
         }
 
@@ -52,80 +53,223 @@ int Simulation::generateNextAgentId() const {
     return maxId + 1;
 }
 
-void Simulation::displayMenu() const {
-    std::cout << "\n=== MicroSociety Menu ===\n";
-    std::cout << "1. Run simulation (N ticks)\n";
-    std::cout << "2. Spawn agent manual\n";
-    std::cout << "3. Show all agents\n";
-    std::cout << "4. Show statistics\n";
-    std::cout << "5. Show recent events\n";
-    std::cout << "6. Save / Load\n";
-    std::cout << "7. Show / edit config\n";
+void Simulation::clearScreen() const {
+    std::cout << "\n\n";
+}
+
+void Simulation::waitForEnter() const {
+    std::cout << "\nPress Enter to continue...";
+    std::cin.get();
+}
+
+void Simulation::printHeader() const {
+    std::cout << "\n========================================\n";
+    std::cout << "           MicroSociety Simulator        \n";
+    std::cout << "========================================\n";
+    std::cout << "Tick: " << currentTick
+              << " | Population: " << world.getAgentCount()
+              << " | Map: " << world.getWidth() << "x" << world.getHeight()
+              << '\n';
+    std::cout << "----------------------------------------\n";
+}
+
+void Simulation::displayMainMenu() const {
+    printHeader();
+    std::cout << "1. Play simulation\n";
+    std::cout << "2. Inspect society\n";
+    std::cout << "3. Manage world\n";
     std::cout << "0. Exit\n";
+}
+
+void Simulation::displayPlayMenu() const {
+    printHeader();
+    std::cout << "1. Advance 1 tick\n";
+    std::cout << "2. Advance 5 ticks\n";
+    std::cout << "3. Advance custom number of ticks\n";
+    std::cout << "0. Back\n";
+}
+
+void Simulation::displayInspectMenu() const {
+    printHeader();
+    std::cout << "1. Show map\n";
+    std::cout << "2. Show statistics\n";
+    std::cout << "3. Show agents\n";
+    std::cout << "4. Show recent events\n";
+    std::cout << "5. Full report\n";
+    std::cout << "0. Back\n";
+}
+
+void Simulation::displayManageMenu() const {
+    printHeader();
+    std::cout << "1. Spawn agent manually\n";
+    std::cout << "2. Save / Load\n";
+    std::cout << "3. Show / edit config\n";
+    std::cout << "0. Back\n";
 }
 
 void Simulation::run() {
     running = true;
-    std::cout << "MicroSociety simulation started.\n";
 
     while (running) {
-        displayMenu();
+        clearScreen();
+        displayMainMenu();
 
-        int option = readInt("Choose option: ");
-
-        switch (option) {
+        switch (readInt("Choose option: ")) {
             case 1:
-                runTicks();
+                playMenu();
                 break;
             case 2:
-                spawnAgentManual();
+                inspectMenu();
                 break;
             case 3:
-                showAllAgents();
-                break;
-            case 4:
-                statisticsManager.displayStatistics(world);
-                break;
-            case 5:
-                eventLogger.displayRecentEvents(10);
-                break;
-            case 6:
-                saveLoadMenu();
-                break;
-            case 7:
-                showEditConfigMenu();
+                manageMenu();
                 break;
             case 0:
                 running = false;
                 break;
             default:
                 std::cout << "Invalid option.\n";
+                waitForEnter();
                 break;
         }
     }
 
-    std::cout << "Simulation ended.\n";
+    std::cout << "Exiting MicroSociety.\n";
+}
+
+void Simulation::playMenu() {
+    bool inPlayMenu = true;
+
+    while (inPlayMenu) {
+        clearScreen();
+        displayPlayMenu();
+
+        switch (readInt("Choose option: ")) {
+            case 1:
+                runTicks(1);
+                waitForEnter();
+                break;
+            case 2:
+                runTicks(5);
+                waitForEnter();
+                break;
+            case 3:
+                runTicks();
+                waitForEnter();
+                break;
+            case 0:
+                inPlayMenu = false;
+                break;
+            default:
+                std::cout << "Invalid option.\n";
+                waitForEnter();
+                break;
+        }
+    }
+}
+
+void Simulation::inspectMenu() const {
+    bool inInspectMenu = true;
+
+    while (inInspectMenu) {
+        clearScreen();
+        displayInspectMenu();
+
+        switch (readInt("Choose option: ")) {
+            case 1:
+                world.displayMap();
+                waitForEnter();
+                break;
+            case 2:
+                statisticsManager.displayStatistics(world);
+                waitForEnter();
+                break;
+            case 3:
+                showAllAgents();
+                waitForEnter();
+                break;
+            case 4:
+                eventLogger.displayRecentEvents(10);
+                waitForEnter();
+                break;
+            case 5:
+                display();
+                waitForEnter();
+                break;
+            case 0:
+                inInspectMenu = false;
+                break;
+            default:
+                std::cout << "Invalid option.\n";
+                waitForEnter();
+                break;
+        }
+    }
+}
+
+void Simulation::manageMenu() {
+    bool inManageMenu = true;
+
+    while (inManageMenu) {
+        clearScreen();
+        displayManageMenu();
+
+        switch (readInt("Choose option: ")) {
+            case 1:
+                spawnAgentManual();
+                waitForEnter();
+                break;
+            case 2:
+                saveLoadMenu();
+                waitForEnter();
+                break;
+            case 3:
+                showEditConfigMenu();
+                waitForEnter();
+                break;
+            case 0:
+                inManageMenu = false;
+                break;
+            default:
+                std::cout << "Invalid option.\n";
+                waitForEnter();
+                break;
+        }
+    }
 }
 
 void Simulation::runTicks() {
-    int ticks = readInt("How many ticks? ");
+    runTicks(readInt("How many ticks? "));
+}
 
+void Simulation::runTicks(int ticks) {
     if (ticks <= 0) {
         std::cout << "Number of ticks must be positive.\n";
         return;
     }
 
     int maxTicks = SimulationConfig::getInstance().getMaxTicks();
+    int ticksRun = 0;
 
     for (int i = 0; i < ticks && currentTick < maxTicks; i++) {
         update();
-        display();
         currentTick++;
+        ticksRun++;
     }
 
+    showAfterTickReport(ticksRun);
+
     if (currentTick >= maxTicks) {
-        std::cout << "Max ticks reached.\n";
+        std::cout << "Max ticks reached. Edit config to continue further.\n";
     }
+}
+
+void Simulation::showAfterTickReport(int ticksRun) const {
+    std::cout << "\nSimulation advanced by " << ticksRun << " tick(s).\n";
+    std::cout << "Current tick: " << currentTick << "\n";
+
+    statisticsManager.displayStatistics(world);
+    eventLogger.displayRecentEvents(5);
 }
 
 void Simulation::spawnAgentManual() {
@@ -139,10 +283,9 @@ void Simulation::spawnAgentManual() {
     std::cout << "2. Trader\n";
     std::cout << "3. Student\n";
 
-    int option = readInt("Type: ");
     AgentType type;
 
-    switch (option) {
+    switch (readInt("Type: ")) {
         case 1:
             type = AgentType::Worker;
             break;
@@ -159,11 +302,6 @@ void Simulation::spawnAgentManual() {
 
     std::unique_ptr<Agent> agent = AgentFactory::createAgent(type, generateNextAgentId());
 
-    if (agent == nullptr) {
-        std::cout << "Agent could not be created.\n";
-        return;
-    }
-
     std::cout << "Agent #" << agent->getId() << " created using AgentFactory.\n";
     world.addAgent(std::move(agent));
 }
@@ -171,7 +309,7 @@ void Simulation::spawnAgentManual() {
 void Simulation::showAllAgents() const {
     const auto& agents = world.getAgents();
 
-    std::cout << "\n--- All Agents ---\n";
+    std::cout << "\n--- Citizens ---\n";
 
     if (agents.empty()) {
         std::cout << "No agents in the world.\n";
@@ -181,12 +319,12 @@ void Simulation::showAllAgents() const {
         }
     }
 
-    std::cout << "------------------\n";
+    std::cout << "----------------\n";
 }
 
 void Simulation::saveLoadMenu() {
-    std::cout << "\n1. Save\n";
-    std::cout << "2. Load\n";
+    std::cout << "\n1. Save world\n";
+    std::cout << "2. Load world\n";
     std::cout << "0. Back\n";
 
     int option = readInt("Choose option: ");
@@ -211,7 +349,7 @@ void Simulation::saveLoadMenu() {
 void Simulation::showEditConfigMenu() {
     SimulationConfig& config = SimulationConfig::getInstance();
 
-    std::cout << "\n--- Config ---\n";
+    std::cout << "\n--- Configuration ---\n";
     std::cout << "1. maxTicks = " << config.getMaxTicks() << '\n';
     std::cout << "2. foodPrice = " << config.getFoodPrice() << '\n';
     std::cout << "3. maxAge = " << config.getMaxAge() << '\n';
@@ -266,19 +404,18 @@ void Simulation::showEditConfigMenu() {
     }
 
     if (config.setValue(key, value)) {
-        std::cout << "Config updated.\n";
+        std::cout << "Config updated for this run.\n";
     } else {
         std::cout << "Invalid config value.\n";
     }
 }
 
 void Simulation::update() {
-    std::cout << "Simulation tick " << currentTick + 1 << "\n";
     world.update();
 }
 
 void Simulation::display() const {
     world.display();
     statisticsManager.displayStatistics(world);
-    eventLogger.displayRecentEvents();
+    eventLogger.displayRecentEvents(10);
 }

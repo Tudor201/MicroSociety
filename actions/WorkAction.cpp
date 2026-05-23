@@ -3,7 +3,6 @@
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
 
-#include <iostream>
 #include <string>
 
 void WorkAction::execute(Agent& agent, World& world) {
@@ -11,9 +10,6 @@ void WorkAction::execute(Agent& agent, World& world) {
 
     if (!agent.isAdult()) {
         agent.changeHappiness(-1);
-
-        std::cout << "Agent #" << agent.getId()
-                  << " is too young to perform a productive adult action.\n";
 
         EventBus::getInstance().publish(
             SimulationEvent(
@@ -27,9 +23,6 @@ void WorkAction::execute(Agent& agent, World& world) {
     }
 
     std::string result = agent.performWork();
-
-    std::cout << "Agent #" << agent.getId()
-              << " " << result << '\n';
 
     EventBus::getInstance().publish(
         SimulationEvent(

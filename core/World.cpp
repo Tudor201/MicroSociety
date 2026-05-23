@@ -64,11 +64,9 @@ void World::spawnInitialAgents() {
     }
 
     recalculatePopulationDensity();
-    std::cout << agents.size() << " agents spawned.\n";
 }
 
 void World::update() {
-    std::cout << "World updating agents...\n";
 
     for (auto& agent : agents) {
         if (agent->isAlive()) {
@@ -82,34 +80,41 @@ void World::update() {
     recalculatePopulationDensity();
 }
 
-void World::display() const {
-    std::cout << "\n--- World map ---\n";
-
-    Grid<char> displayMap(width, height, '.');
-
-    for (const auto& agent : agents) {
-        Position position = agent->getPosition();
-
-        if (agent->isAlive() && displayMap.isInside(position.getX(), position.getY())) {
-            displayMap.at(position.getX(), position.getY()) = 'A';
-        }
-    }
+void World::displayMap() const {
+    std::cout << "\n--- City Map ---\n";
+    std::cout << ". = empty | number = agents in cell\n\n";
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            std::cout << displayMap.at(x, y) << ' ';
+            int count = populationDensity.at(x, y);
+
+            if (count == 0) {
+                std::cout << ". ";
+            } else if (count < 10) {
+                std::cout << count << ' ';
+            } else {
+                std::cout << "* ";
+            }
         }
 
         std::cout << '\n';
     }
+}
 
-    std::cout << "\n--- Agents ---\n";
+void World::display() const {
+    displayMap();
 
-    for (const auto& agent : agents) {
-        agent->display();
+    std::cout << "\n--- Citizens ---\n";
+
+    if (agents.empty()) {
+        std::cout << "No agents in the world.\n";
+    } else {
+        for (const auto& agent : agents) {
+            agent->display();
+        }
     }
 
-    std::cout << "--------------\n\n";
+    std::cout << "---------------\n";
 }
 
 void World::clearAgents() {

@@ -2,7 +2,6 @@
 #include "../agents/Agent.h"
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
-#include <iostream>
 #include <string>
 
 void RestAction::execute(Agent& agent, World& world) {
@@ -11,8 +10,6 @@ void RestAction::execute(Agent& agent, World& world) {
     agent.changeEnergy(30);
     agent.changeHunger(2);
     agent.changeHappiness(1);
-
-    std::cout << "Agent #" << agent.getId() << " rested.\n";
 
     EventBus::getInstance().publish(
         SimulationEvent(

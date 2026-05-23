@@ -5,7 +5,6 @@
 #include "../patterns/EventBus.h"
 #include "../patterns/Event.h"
 
-#include <iostream>
 #include <string>
 
 void MoveAction::execute(Agent& agent, World& world) {
@@ -39,11 +38,6 @@ void MoveAction::execute(Agent& agent, World& world) {
         agent.changeHunger(3);
         agent.changeEnergy(-2);
 
-        Position position = agent.getPosition();
-        std::cout << "Agent #" << agent.getId() << " moved to position ("
-                  << position.getX() << ", "
-                  << position.getY() << ").\n";
-
         EventBus::getInstance().publish(
             SimulationEvent(
                 EventType::AgentMoved,
@@ -53,9 +47,6 @@ void MoveAction::execute(Agent& agent, World& world) {
         );
     } else {
         agent.changeHappiness(-1);
-
-        std::cout << "Agent #" << agent.getId()
-                  << " tried to move, but reached the edge of the world.\n";
 
         EventBus::getInstance().publish(
             SimulationEvent(

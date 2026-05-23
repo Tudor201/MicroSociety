@@ -28,6 +28,7 @@ public:
     void spawnInitialAgents();
     void update();
     void display() const;
+    void displayMap() const;
 
     void clearAgents();
     void addAgent(std::unique_ptr<Agent> agent);
